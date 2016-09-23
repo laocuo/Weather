@@ -3,4 +3,6 @@
 
     <string name="dummy_button">Enter</string>
     <string name="dummy_content">WELCOME</string>
+
+    <string name="splash_network_err">Network connect error!!</string>
 </resources>

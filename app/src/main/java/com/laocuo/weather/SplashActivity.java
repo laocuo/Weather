@@ -1,6 +1,8 @@
 package com.laocuo.weather;
 
 import android.annotation.SuppressLint;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,11 +10,14 @@ import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.laocuo.weather.presenter.impl.SplashPresenter;
+import com.laocuo.weather.presenter.model.SplashInterface;
+
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends AppCompatActivity implements SplashInterface {
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -83,21 +88,18 @@ public class SplashActivity extends AppCompatActivity {
 //        }
 //    };
 
+    private CoordinatorLayout mSnakeParent;
+    private SplashPresenter mSplashPresenter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_splash);
 
+        mSnakeParent = (CoordinatorLayout) findViewById(R.id.snake_container);
         mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.fullscreen_content);
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.hide();
-        }
-        mControlsView.setVisibility(View.GONE);
-        mVisible = false;
-        mHideHandler.postDelayed(mHidePart2Runnable, UI_ANIMATION_DELAY);
+        init();
 
         // Set up the user interaction to manually show or hide the system UI.
         mContentView.setOnClickListener(new View.OnClickListener() {
@@ -115,8 +117,21 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //Enter
+
             }
         });
+    }
+
+    private void init() {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.hide();
+        }
+        mControlsView.setVisibility(View.GONE);
+        mVisible = false;
+        mHideHandler.postDelayed(mHidePart2Runnable, UI_ANIMATION_DELAY);
+        mSplashPresenter = new SplashPresenter();
+        mSplashPresenter.setView(this);
     }
 
     @Override
@@ -127,6 +142,7 @@ public class SplashActivity extends AppCompatActivity {
         // created, to briefly hint to the user that UI controls
         // are available.
 //        delayedHide(100);
+        mSplashPresenter.checkNetWork();
     }
 
     private void toggle() {
@@ -170,5 +186,15 @@ public class SplashActivity extends AppCompatActivity {
     private void delayedHide(int delayMillis) {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
+    }
+
+    @Override
+    public void showEnter() {
+        show();
+    }
+
+    @Override
+    public void showError() {
+        Snackbar.make(mSnakeParent, R.string.splash_network_err, Snackbar.LENGTH_SHORT).show();
     }
 }
