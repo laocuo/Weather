@@ -1,4 +1,4 @@
-package com.laocuo.weather;
+package com.laocuo.weather.view;
 
 import android.annotation.SuppressLint;
 import android.support.design.widget.CoordinatorLayout;
@@ -7,17 +7,17 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.MotionEvent;
 import android.view.View;
 
+import com.laocuo.weather.R;
 import com.laocuo.weather.presenter.impl.SplashPresenter;
-import com.laocuo.weather.presenter.model.SplashInterface;
+import com.laocuo.weather.presenter.model.ISplashInterface;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class SplashActivity extends AppCompatActivity implements SplashInterface {
+public class SplashActivity extends AppCompatActivity implements ISplashInterface {
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -105,7 +105,7 @@ public class SplashActivity extends AppCompatActivity implements SplashInterface
         mContentView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                toggle();
+//                toggle();
             }
         });
 
@@ -134,6 +134,7 @@ public class SplashActivity extends AppCompatActivity implements SplashInterface
         mSplashPresenter.setView(this);
     }
 
+    private Handler mHandler = new Handler();
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -142,7 +143,12 @@ public class SplashActivity extends AppCompatActivity implements SplashInterface
         // created, to briefly hint to the user that UI controls
         // are available.
 //        delayedHide(100);
-        mSplashPresenter.checkNetWork();
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mSplashPresenter.checkNetWork();
+            }
+        }, 2000);
     }
 
     private void toggle() {
