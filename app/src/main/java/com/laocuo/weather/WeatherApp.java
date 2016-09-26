@@ -9,19 +9,23 @@ import android.app.Application;
 public class WeatherApp extends Application {
     private static Application instance;
     private static Object ob = new Object();
-
+    private static String PRIVATEKEY = "ginqrpwhvxk5sc40";
     @Override
     public void onCreate() {
         super.onCreate();
         instance = this;
     }
 
-    public static Application getInstance() {
+    public static Application getContext() {
         synchronized (ob) {
             if (instance == null) {
                 instance = new WeatherApp();
             }
         }
         return instance;
+    }
+
+    public static String getWeatherApiKey() {
+        return PRIVATEKEY;
     }
 }

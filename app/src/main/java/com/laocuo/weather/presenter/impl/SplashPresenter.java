@@ -1,11 +1,8 @@
 package com.laocuo.weather.presenter.impl;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-
 import com.laocuo.weather.WeatherApp;
 import com.laocuo.weather.presenter.model.ISplashInterface;
+import com.laocuo.weather.utils.NetWorkUtil;
 
 /**
  * Created by hoperun on 9/23/16.
@@ -19,23 +16,10 @@ public class SplashPresenter {
     }
 
     public void checkNetWork() {
-        if (isNetworkAvailiable()) {
+        if (NetWorkUtil.isNetWorkAvailable(WeatherApp.getContext())) {
             mView.showEnter();
         } else {
             mView.showError();
-        }
-    }
-
-    private boolean isNetworkAvailiable() {
-        ConnectivityManager cm = (ConnectivityManager) WeatherApp.getInstance().getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (cm == null) {
-            return false;
-        }
-        NetworkInfo ni = cm.getActiveNetworkInfo();
-        if (ni.getState() == NetworkInfo.State.CONNECTED) {
-            return true;
-        } else {
-            return false;
         }
     }
 }
