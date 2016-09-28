@@ -6,7 +6,7 @@ import java.util.List;
  * Created by hoperun on 9/26/16.
  */
 
-public class WeatherInfo {
+public class WeatherNowInfo {
 
     /**
      * location : {"id":"WX4FBXXFKE4F","name":"北京","country":"CN","path":"北京,北京,中国","timezone":"Asia/Shanghai","timezone_offset":"+08:00"}

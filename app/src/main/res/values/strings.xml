@@ -6,5 +6,7 @@
 
     <string name="splash_network_err">Network connect error!!</string>
 
+    <string name="NowInfo">NowInfo</string>
+    <string name="FutureInfo">FutureInfo</string>
     <string name="refresh">Refresh</string>
 </resources>
