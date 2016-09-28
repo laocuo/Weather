@@ -2,10 +2,14 @@ package com.laocuo.weather.view;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.laocuo.weather.R;
 import com.laocuo.weather.bean.WeatherFutureInfo;
@@ -40,10 +44,21 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_weather);
+        setContentView(R.layout.weather);
         ButterKnife.inject(this);
+        init();
         mWeatherPresenter = new WeatherPresenter();
         mWeatherPresenter.setView(this);
+    }
+
+    private void init() {
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        CollapsingToolbarLayout collapsingToolbar =
+                (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        collapsingToolbar.setTitle(getResources().getString(R.string.app_name));
     }
 
     @OnClick(R.id.weather_refresh) void refresh() {
@@ -65,6 +80,11 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
             mWeatherInfo.setText("weatherNowInfo == null");
         }
     }
+
+//    private void loadBackdrop() {
+//        final ImageView imageView = (ImageView) findViewById(R.id.backdrop);
+//        Glide.with(this).load(Cheeses.getRandomCheeseDrawable()).centerCrop().into(imageView);
+//    }
 
     @Override
     public void updateFutureInfo(WeatherFutureInfo weatherFutureInfo) {
