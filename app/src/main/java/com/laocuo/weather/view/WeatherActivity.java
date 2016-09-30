@@ -36,6 +36,7 @@ import com.laocuo.weather.utils.L;
 import butterknife.ButterKnife;
 import butterknife.BindView;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 
 /**
  * Created by Administrator on 2016/9/24 0024.
@@ -59,6 +60,7 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
     @BindView(R.id.refresh) FloatingActionButton mRefresh;
 
     @BindView(R.id.card_list) RecyclerView mCardList;
+
     private WeatherPresenter mWeatherPresenter;
     private Gson gson = new Gson();
 
@@ -85,7 +87,7 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
 
     private DailyListAdapter mDailyListAdapter;
     private CardListAdapter mCardListAdapter;
-
+    private Unbinder unbinder;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,6 +96,12 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
         init();
         mWeatherPresenter = new WeatherPresenter();
         mWeatherPresenter.setView(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        unbinder.unbind();
+        super.onDestroy();
     }
 
     private void init() {
@@ -168,7 +176,7 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
         builder.append(resultsBean.getLocation().getName())
                 .append(" ")
                 .append(resultsBean.getNow().getTemperature())
-                .append("C ")
+                .append("℃ ")
                 .append(resultsBean.getNow().getText());
         return builder.toString();
     }
@@ -177,7 +185,7 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
     public void updateDailyInfo(WeatherDailyInfo info) {
         if (info != null) {
             mDailyListAdapter.setDailyInfo(info);
-//            mCardListAdapter.setCardInfo(info);
+            mCardListAdapter.setCardInfo(info);
         }
     }
 

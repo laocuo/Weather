@@ -35,11 +35,11 @@ public class DailyListAdapter extends RecyclerView.Adapter<DailyListAdapter.Dail
     public void onBindViewHolder(DailyInfoHolder holder, int position) {
         WeatherDailyInfo.ResultsBean.DailyBean db = info.getResults().get(0).getDaily().get(position);
         holder.date.setText(db.getDate());
-        holder.text_day.setText("D:"+db.getText_day());
-        holder.text_night.setText("N:"+db.getText_night());
+        holder.text_day.setText("日:"+db.getText_day());
+        holder.text_night.setText("夜:"+db.getText_night());
         holder.code_day.setImageResource(ImagesUtil.getDrawableByCode(Integer.parseInt(db.getCode_day())));
         holder.code_night.setImageResource(ImagesUtil.getDrawableByCode(Integer.parseInt(db.getCode_night())));
-        holder.temp.setText(db.getHigh()+"C / "+db.getLow()+"C");
+        holder.temp.setText(db.getHigh()+"℃ / "+db.getLow()+"℃");
     }
 
     @Override

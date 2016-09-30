@@ -1,16 +1,19 @@
 <resources>
-    <string name="app_name">Weather</string>
+    <string name="app_name">天气预报</string>
 
-    <string name="dummy_button">Enter</string>
-    <string name="dummy_content">WELCOME</string>
+    <string name="dummy_button">进入</string>
+    <string name="dummy_content">欢迎页面</string>
 
-    <string name="splash_network_err">Network connect error!!</string>
+    <string name="splash_network_err">网络连接错误!!</string>
 
     <string name="NowInfo">NowInfo</string>
     <string name="FutureInfo">FutureInfo</string>
     <string name="LifeInfo">LifeInfo</string>
     <string name="refresh">Refresh</string>
-    <string name="share">Share</string>
+    <string name="share">分享</string>
 
-    <string name="wait">Waitting</string>
+    <string name="wait">等待中...</string>
+
+    <string name="day">白天</string>
+    <string name="night">夜晚</string>
 </resources>

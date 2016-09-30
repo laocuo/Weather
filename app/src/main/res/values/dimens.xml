@@ -3,11 +3,12 @@
     <dimen name="detail_backdrop_height">256dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
 
+    <dimen name="daily_item_margin">1dp</dimen>
     <dimen name="daily_item_height">160dp</dimen>
     <dimen name="daily_item_gap">10dp</dimen>
     <dimen name="daily_item_text_size">12sp</dimen>
     <dimen name="daily_item_image_height">60dp</dimen>
 
-    <dimen name="card_item_margin">16dp</dimen>
+    <dimen name="card_item_margin">2dp</dimen>
     <dimen name="card_item_height">200dp</dimen>
 </resources>
