@@ -5,6 +5,9 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,6 +18,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.laocuo.weather.R;
+import com.laocuo.weather.adapter.DailyListAdapter;
 import com.laocuo.weather.bean.WeatherAirInfo;
 import com.laocuo.weather.bean.WeatherDailyInfo;
 import com.laocuo.weather.bean.WeatherHourlyInfo;
@@ -23,6 +27,7 @@ import com.laocuo.weather.bean.WeatherNowInfo;
 import com.laocuo.weather.bean.WeatherSunInfo;
 import com.laocuo.weather.presenter.impl.WeatherPresenter;
 import com.laocuo.weather.presenter.model.IWeatherInterface;
+import com.laocuo.weather.utils.ImagesUtil;
 import com.laocuo.weather.utils.L;
 
 import butterknife.ButterKnife;
@@ -45,6 +50,8 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
     @InjectView(R.id.backdrop) ImageView mBackdrop;
 
     @InjectView(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbar;
+
+    @InjectView(R.id.daily_list) RecyclerView mDailyList;
 
     private WeatherPresenter mWeatherPresenter;
     private Gson gson = new Gson();
@@ -69,6 +76,9 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
             mWeatherPresenter.getDailyInfo("nanjing");
         }
     }
+
+    private DailyListAdapter mDailyListAdapter;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,7 +94,11 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
         setSupportActionBar(toolbar);
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         collapsingToolbar.setTitle(getResources().getString(R.string.wait));
-        Glide.with(this).load(R.drawable.cheese_4).centerCrop().into(mBackdrop);
+        Glide.with(this).load(ImagesUtil.getRandomNavigationDrawable()).centerCrop().into(mBackdrop);
+        mDailyListAdapter = new DailyListAdapter(this);
+        mDailyList.setLayoutManager(new GridLayoutManager(this, 3));
+        mDailyList.setItemAnimator(new DefaultItemAnimator());
+        mDailyList.setAdapter(mDailyListAdapter);
     }
 
     @Override
@@ -111,11 +125,11 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
     }
 
     @OnClick(R.id.weather_refresh) void refresh() {
-        mWeatherPresenter.getNowInfo("nanjing");
+        mWeatherPresenter.getDailyInfo("nanjing");
     }
 
     @OnClick(R.id.weather_refresh1) void refresh1() {
-        mWeatherPresenter.getDailyInfo("nanjing");
+        mWeatherPresenter.getLifeInfo("nanjing");
     }
 
     @Override
@@ -123,10 +137,12 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
         if (info != null) {
             String result = gson.toJson(info);
             mWeatherInfo.setText(result);
+        } else {
+            mWeatherInfo.setText("info == null");
+        }
+        if (info != null) {
             WeatherNowInfo.ResultsBean resultsBean = info.getResults().get(0);
             collapsingToolbar.setTitle(formatNowInfo(resultsBean));
-        } else {
-            mWeatherInfo.setText("WeatherNowInfo == null");
         }
     }
 
@@ -135,7 +151,7 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
         builder.append(resultsBean.getLocation().getName())
                 .append(" ")
                 .append(resultsBean.getNow().getTemperature())
-                .append(".C ")
+                .append("C ")
                 .append(resultsBean.getNow().getText());
         return builder.toString();
     }
@@ -143,30 +159,29 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
     @Override
     public void updateDailyInfo(WeatherDailyInfo info) {
         if (info != null) {
-            String result = gson.toJson(info);
-            mWeatherInfo1.setText(result);
-        } else {
-            mWeatherInfo.setText("WeatherDailyInfo == null");
+            mDailyListAdapter.setDailyInfo(info);
         }
     }
 
     @Override
     public void updateHourlyInfo(WeatherHourlyInfo info) {
-
     }
 
     @Override
     public void updateAirInfo(WeatherAirInfo info) {
-
     }
 
     @Override
     public void updateLifeInfo(WeatherLifeInfo info) {
-
+        if (info != null) {
+            String result = gson.toJson(info);
+            mWeatherInfo1.setText(result);
+        } else {
+            mWeatherInfo1.setText("info == null");
+        }
     }
 
     @Override
     public void updateSunInfo(WeatherSunInfo info) {
-
     }
 }

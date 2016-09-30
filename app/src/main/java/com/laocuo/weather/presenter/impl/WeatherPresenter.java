@@ -3,8 +3,12 @@ package com.laocuo.weather.presenter.impl;
 import com.laocuo.weather.WeatherApp;
 import com.laocuo.weather.api.ApiManager;
 import com.laocuo.weather.api.WeatherApi;
+import com.laocuo.weather.bean.WeatherAirInfo;
 import com.laocuo.weather.bean.WeatherDailyInfo;
+import com.laocuo.weather.bean.WeatherHourlyInfo;
+import com.laocuo.weather.bean.WeatherLifeInfo;
 import com.laocuo.weather.bean.WeatherNowInfo;
+import com.laocuo.weather.bean.WeatherSunInfo;
 import com.laocuo.weather.presenter.model.IWeatherInterface;
 
 import rx.Observer;
@@ -71,6 +75,114 @@ public class WeatherPresenter extends BasePresenter{
                     @Override
                     public void onNext(WeatherDailyInfo weatherinfo) {
                         mView.updateDailyInfo(weatherinfo);
+                    }
+                });
+        addSubscription(subscription);
+    }
+
+    public void getHourlyInfo(String city) {
+        WeatherApi weatherApiapi = ApiManager.getInstence().getWeatherApiService();
+
+        Subscription subscription = weatherApiapi.getHourlyInfo(WeatherApp.getWeatherApiKey(),
+                city, "zh-Hans", "c", "0", "7")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<WeatherHourlyInfo>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        mView.updateHourlyInfo(null);
+                    }
+
+                    @Override
+                    public void onNext(WeatherHourlyInfo weatherHourlyInfo) {
+                        mView.updateHourlyInfo(weatherHourlyInfo);
+                    }
+                });
+        addSubscription(subscription);
+    }
+
+    public void getAirInfo(String city) {
+        WeatherApi weatherApiapi = ApiManager.getInstence().getWeatherApiService();
+
+        Subscription subscription = weatherApiapi.getAirInfo(WeatherApp.getWeatherApiKey(),
+                city, "zh-Hans", "c", "city")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<WeatherAirInfo>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        mView.updateAirInfo(null);
+                    }
+
+                    @Override
+                    public void onNext(WeatherAirInfo weatherAirInfo) {
+                        mView.updateAirInfo(weatherAirInfo);
+                    }
+                });
+        addSubscription(subscription);
+    }
+
+    public void getLifeInfo(String city) {
+        WeatherApi weatherApiapi = ApiManager.getInstence().getWeatherApiService();
+
+        Subscription subscription = weatherApiapi.getLifeInfo(WeatherApp.getWeatherApiKey(),
+                city, "zh-Hans")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<WeatherLifeInfo>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        mView.updateLifeInfo(null);
+                    }
+
+                    @Override
+                    public void onNext(WeatherLifeInfo weatherLifeInfo) {
+                        mView.updateLifeInfo(weatherLifeInfo);
+                    }
+                });
+        addSubscription(subscription);
+    }
+
+    public void getSunInfo(String city) {
+        WeatherApi weatherApiapi = ApiManager.getInstence().getWeatherApiService();
+
+        Subscription subscription = weatherApiapi.getSunInfo(WeatherApp.getWeatherApiKey(),
+                city, "zh-Hans", "0", "3")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<WeatherSunInfo>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        mView.updateSunInfo(null);
+                    }
+
+                    @Override
+                    public void onNext(WeatherSunInfo weatherSunInfo) {
+                        mView.updateSunInfo(weatherSunInfo);
                     }
                 });
         addSubscription(subscription);

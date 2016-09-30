@@ -3,6 +3,11 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/daily_list"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/daily_item_height">
+    </android.support.v7.widget.RecyclerView>
     <Button
         android:id="@+id/weather_refresh"
         style="?metaButtonBarStyle"
@@ -23,7 +28,7 @@
         style="?metaButtonBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/FutureInfo"
+        android:text="@string/LifeInfo"
         android:layout_marginTop="20dp"
         android:layout_gravity="center_horizontal"/>
 

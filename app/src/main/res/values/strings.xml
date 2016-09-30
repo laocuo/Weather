@@ -8,6 +8,7 @@
 
     <string name="NowInfo">NowInfo</string>
     <string name="FutureInfo">FutureInfo</string>
+    <string name="LifeInfo">LifeInfo</string>
     <string name="refresh">Refresh</string>
     <string name="share">Share</string>
 
