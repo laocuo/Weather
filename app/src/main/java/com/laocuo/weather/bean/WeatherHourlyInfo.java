@@ -3,15 +3,14 @@ package com.laocuo.weather.bean;
 import java.util.List;
 
 /**
- * Created by hoperun on 9/26/16.
+ * Created by hoperun on 9/30/16.
  */
 
-public class WeatherNowInfo {
+public class WeatherHourlyInfo {
 
     /**
-     * location : {"id":"C23NB62W20TF","name":"西雅图","country":"US","timezone":"America/Los_Angeles","timezone_offset":"-07:00"}
-     * now : {"text":"多云","code":"4","temperature":"14","feels_like":"14","pressure":"1018","humidity":"76","visibility":"16.09","wind_direction":"西北","wind_direction_degree":"340","wind_speed":"8.05","wind_scale":"2","clouds":"90","dew_point":"-12"}
-     * last_update : 2015-09-25T22:45:00-07:00
+     * location : {"id":"WX4FBXXFKE4F","name":"北京","country":"CN","path":"北京,北京,中国","timezone":"Asia/Shanghai","timezone_offset":"+08:00"}
+     * hourly : [{"time":"2016-02-19T14:00:00+08:00","text":"多云","code":"4","temperature":"7","humidity":"35","wind_direction":"北","wind_speed":"18.0"},{"time":"2016-02-19T15:00:00+08:00","text":"多云","code":"4","temperature":"6","humidity":"37","wind_direction":"西北","wind_speed":"12.0"}]
      */
 
     private List<ResultsBean> results;
@@ -26,32 +25,26 @@ public class WeatherNowInfo {
 
     public static class ResultsBean {
         /**
-         * id : C23NB62W20TF
-         * name : 西雅图
-         * country : US
-         * timezone : America/Los_Angeles
-         * timezone_offset : -07:00
+         * id : WX4FBXXFKE4F
+         * name : 北京
+         * country : CN
+         * path : 北京,北京,中国
+         * timezone : Asia/Shanghai
+         * timezone_offset : +08:00
          */
 
         private LocationBean location;
         /**
+         * time : 2016-02-19T14:00:00+08:00
          * text : 多云
          * code : 4
-         * temperature : 14
-         * feels_like : 14
-         * pressure : 1018
-         * humidity : 76
-         * visibility : 16.09
-         * wind_direction : 西北
-         * wind_direction_degree : 340
-         * wind_speed : 8.05
-         * wind_scale : 2
-         * clouds : 90
-         * dew_point : -12
+         * temperature : 7
+         * humidity : 35
+         * wind_direction : 北
+         * wind_speed : 18.0
          */
 
-        private NowBean now;
-        private String last_update;
+        private List<HourlyBean> hourly;
 
         public LocationBean getLocation() {
             return location;
@@ -61,26 +54,19 @@ public class WeatherNowInfo {
             this.location = location;
         }
 
-        public NowBean getNow() {
-            return now;
+        public List<HourlyBean> getHourly() {
+            return hourly;
         }
 
-        public void setNow(NowBean now) {
-            this.now = now;
-        }
-
-        public String getLast_update() {
-            return last_update;
-        }
-
-        public void setLast_update(String last_update) {
-            this.last_update = last_update;
+        public void setHourly(List<HourlyBean> hourly) {
+            this.hourly = hourly;
         }
 
         public static class LocationBean {
             private String id;
             private String name;
             private String country;
+            private String path;
             private String timezone;
             private String timezone_offset;
 
@@ -108,6 +94,14 @@ public class WeatherNowInfo {
                 this.country = country;
             }
 
+            public String getPath() {
+                return path;
+            }
+
+            public void setPath(String path) {
+                this.path = path;
+            }
+
             public String getTimezone() {
                 return timezone;
             }
@@ -125,20 +119,22 @@ public class WeatherNowInfo {
             }
         }
 
-        public static class NowBean {
+        public static class HourlyBean {
+            private String time;
             private String text;
             private String code;
             private String temperature;
-            private String feels_like;
-            private String pressure;
             private String humidity;
-            private String visibility;
             private String wind_direction;
-            private String wind_direction_degree;
             private String wind_speed;
-            private String wind_scale;
-            private String clouds;
-            private String dew_point;
+
+            public String getTime() {
+                return time;
+            }
+
+            public void setTime(String time) {
+                this.time = time;
+            }
 
             public String getText() {
                 return text;
@@ -164,36 +160,12 @@ public class WeatherNowInfo {
                 this.temperature = temperature;
             }
 
-            public String getFeels_like() {
-                return feels_like;
-            }
-
-            public void setFeels_like(String feels_like) {
-                this.feels_like = feels_like;
-            }
-
-            public String getPressure() {
-                return pressure;
-            }
-
-            public void setPressure(String pressure) {
-                this.pressure = pressure;
-            }
-
             public String getHumidity() {
                 return humidity;
             }
 
             public void setHumidity(String humidity) {
                 this.humidity = humidity;
-            }
-
-            public String getVisibility() {
-                return visibility;
-            }
-
-            public void setVisibility(String visibility) {
-                this.visibility = visibility;
             }
 
             public String getWind_direction() {
@@ -204,44 +176,12 @@ public class WeatherNowInfo {
                 this.wind_direction = wind_direction;
             }
 
-            public String getWind_direction_degree() {
-                return wind_direction_degree;
-            }
-
-            public void setWind_direction_degree(String wind_direction_degree) {
-                this.wind_direction_degree = wind_direction_degree;
-            }
-
             public String getWind_speed() {
                 return wind_speed;
             }
 
             public void setWind_speed(String wind_speed) {
                 this.wind_speed = wind_speed;
-            }
-
-            public String getWind_scale() {
-                return wind_scale;
-            }
-
-            public void setWind_scale(String wind_scale) {
-                this.wind_scale = wind_scale;
-            }
-
-            public String getClouds() {
-                return clouds;
-            }
-
-            public void setClouds(String clouds) {
-                this.clouds = clouds;
-            }
-
-            public String getDew_point() {
-                return dew_point;
-            }
-
-            public void setDew_point(String dew_point) {
-                this.dew_point = dew_point;
             }
         }
     }

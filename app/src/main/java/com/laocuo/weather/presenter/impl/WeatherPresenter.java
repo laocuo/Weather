@@ -3,7 +3,7 @@ package com.laocuo.weather.presenter.impl;
 import com.laocuo.weather.WeatherApp;
 import com.laocuo.weather.api.ApiManager;
 import com.laocuo.weather.api.WeatherApi;
-import com.laocuo.weather.bean.WeatherFutureInfo;
+import com.laocuo.weather.bean.WeatherDailyInfo;
 import com.laocuo.weather.bean.WeatherNowInfo;
 import com.laocuo.weather.presenter.model.IWeatherInterface;
 
@@ -49,14 +49,14 @@ public class WeatherPresenter extends BasePresenter{
         addSubscription(subscription);
     }
 
-    public void getFutureInfo(String city) {
+    public void getDailyInfo(String city) {
         WeatherApi weatherApiapi = ApiManager.getInstence().getWeatherApiService();
 
-        Subscription subscription = weatherApiapi.getFutureInfo(WeatherApp.getWeatherApiKey(),
+        Subscription subscription = weatherApiapi.getDailyInfo(WeatherApp.getWeatherApiKey(),
                 city, "zh-Hans", "c", "0", "3")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<WeatherFutureInfo>() {
+                .subscribe(new Observer<WeatherDailyInfo>() {
                     @Override
                     public void onCompleted() {
 
@@ -65,12 +65,12 @@ public class WeatherPresenter extends BasePresenter{
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-                        mView.updateFutureInfo(null);
+                        mView.updateDailyInfo(null);
                     }
 
                     @Override
-                    public void onNext(WeatherFutureInfo weatherinfo) {
-                        mView.updateFutureInfo(weatherinfo);
+                    public void onNext(WeatherDailyInfo weatherinfo) {
+                        mView.updateDailyInfo(weatherinfo);
                     }
                 });
         addSubscription(subscription);

@@ -9,4 +9,7 @@
     <string name="NowInfo">NowInfo</string>
     <string name="FutureInfo">FutureInfo</string>
     <string name="refresh">Refresh</string>
+    <string name="share">Share</string>
+
+    <string name="wait">Waitting</string>
 </resources>

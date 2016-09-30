@@ -5,6 +5,12 @@
              android:background="#0099cc"
              tools:context="com.laocuo.weather.view.SplashActivity">
 
+    <ProgressBar
+        android:id="@+id/fullscreen_progressbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_gravity="top|end"/>
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
          TextureView, etc. -->

@@ -1,10 +1,13 @@
 package com.laocuo.weather.view;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,8 +15,12 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.laocuo.weather.R;
-import com.laocuo.weather.bean.WeatherFutureInfo;
+import com.laocuo.weather.bean.WeatherAirInfo;
+import com.laocuo.weather.bean.WeatherDailyInfo;
+import com.laocuo.weather.bean.WeatherHourlyInfo;
+import com.laocuo.weather.bean.WeatherLifeInfo;
 import com.laocuo.weather.bean.WeatherNowInfo;
+import com.laocuo.weather.bean.WeatherSunInfo;
 import com.laocuo.weather.presenter.impl.WeatherPresenter;
 import com.laocuo.weather.presenter.model.IWeatherInterface;
 import com.laocuo.weather.utils.L;
@@ -35,12 +42,33 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
 
     @InjectView(R.id.weather_info1) TextView mWeatherInfo1;
 
-    @InjectView(R.id.weather_refresh2) Button mRefresh2;
+    @InjectView(R.id.backdrop) ImageView mBackdrop;
 
-    @InjectView(R.id.weather_info2) TextView mWeatherInfo2;
+    @InjectView(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbar;
 
     private WeatherPresenter mWeatherPresenter;
     private Gson gson = new Gson();
+
+    private UpdateWeatherThread mUpdateWeatherThread = new UpdateWeatherThread();
+
+    private class UpdateWeatherThread extends Thread {
+        @Override
+        public void run() {
+            mWeatherPresenter.getNowInfo("nanjing");
+            mWeatherPresenter.getDailyInfo("nanjing");
+        }
+    }
+
+    private Handler mHandler = new Handler();
+    private UpdateWeatherInfo mUpdateWeatherInfo = new UpdateWeatherInfo();
+    private class UpdateWeatherInfo implements Runnable {
+
+        @Override
+        public void run() {
+            mWeatherPresenter.getNowInfo("nanjing");
+            mWeatherPresenter.getDailyInfo("nanjing");
+        }
+    }
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,11 +82,32 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
     private void init() {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        collapsingToolbar.setTitle(getResources().getString(R.string.wait));
+        Glide.with(this).load(R.drawable.cheese_4).centerCrop().into(mBackdrop);
+    }
 
-        CollapsingToolbarLayout collapsingToolbar =
-                (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        collapsingToolbar.setTitle(getResources().getString(R.string.app_name));
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_weather, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.shareWeather) {
+            L.d("shareWeather");
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+//        mHandler.postDelayed(updateWeatherInfo, 300);
+        mUpdateWeatherThread.start();
     }
 
     @OnClick(R.id.weather_refresh) void refresh() {
@@ -66,35 +115,58 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
     }
 
     @OnClick(R.id.weather_refresh1) void refresh1() {
-        mWeatherPresenter.getFutureInfo("nanjing");
+        mWeatherPresenter.getDailyInfo("nanjing");
     }
 
     @Override
-    public void updateNowInfo(WeatherNowInfo weatherNowInfo) {
-        if (weatherNowInfo != null) {
-            L.d("weatherNowInfo != null");
-            String result = gson.toJson(weatherNowInfo);
+    public void updateNowInfo(WeatherNowInfo info) {
+        if (info != null) {
+            String result = gson.toJson(info);
             mWeatherInfo.setText(result);
+            WeatherNowInfo.ResultsBean resultsBean = info.getResults().get(0);
+            collapsingToolbar.setTitle(formatNowInfo(resultsBean));
         } else {
-            L.d("weatherNowInfo == null");
-            mWeatherInfo.setText("weatherNowInfo == null");
+            mWeatherInfo.setText("WeatherNowInfo == null");
         }
     }
 
-//    private void loadBackdrop() {
-//        final ImageView imageView = (ImageView) findViewById(R.id.backdrop);
-//        Glide.with(this).load(Cheeses.getRandomCheeseDrawable()).centerCrop().into(imageView);
-//    }
+    private CharSequence formatNowInfo(WeatherNowInfo.ResultsBean resultsBean) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(resultsBean.getLocation().getName())
+                .append(" ")
+                .append(resultsBean.getNow().getTemperature())
+                .append(".C ")
+                .append(resultsBean.getNow().getText());
+        return builder.toString();
+    }
 
     @Override
-    public void updateFutureInfo(WeatherFutureInfo weatherFutureInfo) {
-        if (weatherFutureInfo != null) {
-            L.d("weatherNowInfo != null");
-            String result = gson.toJson(weatherFutureInfo);
+    public void updateDailyInfo(WeatherDailyInfo info) {
+        if (info != null) {
+            String result = gson.toJson(info);
             mWeatherInfo1.setText(result);
         } else {
-            L.d("weatherNowInfo == null");
-            mWeatherInfo.setText("weatherNowInfo == null");
+            mWeatherInfo.setText("WeatherDailyInfo == null");
         }
+    }
+
+    @Override
+    public void updateHourlyInfo(WeatherHourlyInfo info) {
+
+    }
+
+    @Override
+    public void updateAirInfo(WeatherAirInfo info) {
+
+    }
+
+    @Override
+    public void updateLifeInfo(WeatherLifeInfo info) {
+
+    }
+
+    @Override
+    public void updateSunInfo(WeatherSunInfo info) {
+
     }
 }

@@ -9,6 +9,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ProgressBar;
 
 import com.laocuo.weather.R;
 import com.laocuo.weather.presenter.impl.SplashPresenter;
@@ -64,6 +67,7 @@ public class SplashActivity extends AppCompatActivity implements ISplashInterfac
 //            if (actionBar != null) {
 //                actionBar.show();
 //            }
+            mProgressBar.setVisibility(View.INVISIBLE);
             mControlsView.setVisibility(View.VISIBLE);
         }
     };
@@ -91,15 +95,19 @@ public class SplashActivity extends AppCompatActivity implements ISplashInterfac
 
     private CoordinatorLayout mSnakeParent;
     private SplashPresenter mSplashPresenter;
+    private ProgressBar mProgressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+//        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_splash);
 
         mSnakeParent = (CoordinatorLayout) findViewById(R.id.snake_container);
         mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.fullscreen_content);
+        mProgressBar = (ProgressBar) findViewById(R.id.fullscreen_progressbar);
         init();
 
         // Set up the user interaction to manually show or hide the system UI.
@@ -134,12 +142,12 @@ public class SplashActivity extends AppCompatActivity implements ISplashInterfac
         // Note that some of these constants are new as of API 16 (Jelly Bean)
         // and API 19 (KitKat). It is safe to use them, as they are inlined
         // at compile-time and do nothing on earlier devices.
-        mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
-                | View.SYSTEM_UI_FLAG_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+//        mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
+//                | View.SYSTEM_UI_FLAG_FULLSCREEN
+//                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+//                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+//                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+//                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 //        mHideHandler.postDelayed(mHidePart2Runnable, UI_ANIMATION_DELAY);
         mSplashPresenter = new SplashPresenter();
         mSplashPresenter.setView(this);
