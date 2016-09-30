@@ -100,7 +100,7 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
 
     @Override
     protected void onDestroy() {
-        unbinder.unbind();
+//        unbinder.unbind();
         super.onDestroy();
     }
 
