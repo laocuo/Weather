@@ -39,7 +39,7 @@ public class DailyListAdapter extends RecyclerView.Adapter<DailyListAdapter.Dail
         holder.text_night.setText("N:"+db.getText_night());
         holder.code_day.setImageResource(ImagesUtil.getDrawableByCode(Integer.parseInt(db.getCode_day())));
         holder.code_night.setImageResource(ImagesUtil.getDrawableByCode(Integer.parseInt(db.getCode_night())));
-        holder.temp.setText(db.getHigh()+"C / "+db.getLow()+"");
+        holder.temp.setText(db.getHigh()+"C / "+db.getLow()+"C");
     }
 
     @Override

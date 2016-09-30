@@ -2,11 +2,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="wrap_content">
     <android.support.v7.widget.RecyclerView
+        android:layout_marginTop="@dimen/daily_item_gap"
         android:id="@+id/daily_list"
         android:layout_width="match_parent"
         android:layout_height="@dimen/daily_item_height">
+    </android.support.v7.widget.RecyclerView>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/card_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     </android.support.v7.widget.RecyclerView>
     <Button
         android:id="@+id/weather_refresh"

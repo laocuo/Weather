@@ -4,9 +4,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -18,6 +20,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.laocuo.weather.R;
+import com.laocuo.weather.adapter.CardListAdapter;
 import com.laocuo.weather.adapter.DailyListAdapter;
 import com.laocuo.weather.bean.WeatherAirInfo;
 import com.laocuo.weather.bean.WeatherDailyInfo;
@@ -39,11 +42,11 @@ import butterknife.OnClick;
  */
 
 public class WeatherActivity extends AppCompatActivity implements IWeatherInterface{
-    @InjectView(R.id.weather_refresh) Button mRefresh;
+    @InjectView(R.id.weather_refresh) Button mGetInfo;
 
     @InjectView(R.id.weather_info) TextView mWeatherInfo;
 
-    @InjectView(R.id.weather_refresh1) Button mRefresh1;
+    @InjectView(R.id.weather_refresh1) Button mGetInfo1;
 
     @InjectView(R.id.weather_info1) TextView mWeatherInfo1;
 
@@ -53,6 +56,9 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
 
     @InjectView(R.id.daily_list) RecyclerView mDailyList;
 
+    @InjectView(R.id.refresh) FloatingActionButton mRefresh;
+
+    @InjectView(R.id.card_list) RecyclerView mCardList;
     private WeatherPresenter mWeatherPresenter;
     private Gson gson = new Gson();
 
@@ -78,6 +84,7 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
     }
 
     private DailyListAdapter mDailyListAdapter;
+    private CardListAdapter mCardListAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -95,10 +102,16 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         collapsingToolbar.setTitle(getResources().getString(R.string.wait));
         Glide.with(this).load(ImagesUtil.getRandomNavigationDrawable()).centerCrop().into(mBackdrop);
+
         mDailyListAdapter = new DailyListAdapter(this);
         mDailyList.setLayoutManager(new GridLayoutManager(this, 3));
         mDailyList.setItemAnimator(new DefaultItemAnimator());
         mDailyList.setAdapter(mDailyListAdapter);
+
+        mCardListAdapter = new CardListAdapter(this);
+        mCardList.setLayoutManager(new LinearLayoutManager(this));
+        mCardList.setItemAnimator(new DefaultItemAnimator());
+        mCardList.setAdapter(mCardListAdapter);
     }
 
     @Override
@@ -124,12 +137,16 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
         mUpdateWeatherThread.start();
     }
 
-    @OnClick(R.id.weather_refresh) void refresh() {
+    @OnClick(R.id.weather_refresh) void getInfo() {
         mWeatherPresenter.getDailyInfo("nanjing");
     }
 
-    @OnClick(R.id.weather_refresh1) void refresh1() {
+    @OnClick(R.id.weather_refresh1) void getInfo1() {
         mWeatherPresenter.getLifeInfo("nanjing");
+    }
+
+    @OnClick(R.id.refresh) void refresh() {
+//        mHandler.post(mUpdateWeatherInfo);
     }
 
     @Override
@@ -160,6 +177,7 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
     public void updateDailyInfo(WeatherDailyInfo info) {
         if (info != null) {
             mDailyListAdapter.setDailyInfo(info);
+//            mCardListAdapter.setCardInfo(info);
         }
     }
 
