@@ -34,7 +34,7 @@ import com.laocuo.weather.utils.ImagesUtil;
 import com.laocuo.weather.utils.L;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -42,23 +42,23 @@ import butterknife.OnClick;
  */
 
 public class WeatherActivity extends AppCompatActivity implements IWeatherInterface{
-    @InjectView(R.id.weather_refresh) Button mGetInfo;
+    @BindView(R.id.weather_refresh) Button mGetInfo;
 
-    @InjectView(R.id.weather_info) TextView mWeatherInfo;
+    @BindView(R.id.weather_info) TextView mWeatherInfo;
 
-    @InjectView(R.id.weather_refresh1) Button mGetInfo1;
+    @BindView(R.id.weather_refresh1) Button mGetInfo1;
 
-    @InjectView(R.id.weather_info1) TextView mWeatherInfo1;
+    @BindView(R.id.weather_info1) TextView mWeatherInfo1;
 
-    @InjectView(R.id.backdrop) ImageView mBackdrop;
+    @BindView(R.id.backdrop) ImageView mBackdrop;
 
-    @InjectView(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbar;
+    @BindView(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbar;
 
-    @InjectView(R.id.daily_list) RecyclerView mDailyList;
+    @BindView(R.id.daily_list) RecyclerView mDailyList;
 
-    @InjectView(R.id.refresh) FloatingActionButton mRefresh;
+    @BindView(R.id.refresh) FloatingActionButton mRefresh;
 
-    @InjectView(R.id.card_list) RecyclerView mCardList;
+    @BindView(R.id.card_list) RecyclerView mCardList;
     private WeatherPresenter mWeatherPresenter;
     private Gson gson = new Gson();
 
@@ -90,7 +90,7 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.weather);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         init();
         mWeatherPresenter = new WeatherPresenter();
         mWeatherPresenter.setView(this);
