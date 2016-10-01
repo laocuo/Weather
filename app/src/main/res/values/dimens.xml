@@ -9,11 +9,12 @@
     <dimen name="daily_item_text_size">12sp</dimen>
     <dimen name="daily_item_image_height">60dp</dimen>
 
-    <dimen name="card_item_margin">1dp</dimen>
+    <dimen name="card_item_margin">0dp</dimen>
     <dimen name="card_item_margin_inline">4dp</dimen>
     <dimen name="card_item_height">120dp</dimen>
     <dimen name="card_item_image_height">34dp</dimen>
 
     <dimen name="small_font_size">10sp</dimen>
     <dimen name="data_source_height">40dp</dimen>
+    <dimen name="common_margin">10dp</dimen>
 </resources>
