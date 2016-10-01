@@ -42,7 +42,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginTop="@dimen/card_item_margin"
+                android:layout_marginTop="@dimen/card_item_margin_inline"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <LinearLayout
@@ -67,8 +67,8 @@
                         android:layout_gravity="center_horizontal"
                         android:scaleType="centerInside"
                         android:src="@drawable/code_99"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"/>
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/card_item_image_height"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="0dp"
@@ -92,13 +92,13 @@
                         android:layout_gravity="center_horizontal"
                         android:scaleType="centerInside"
                         android:src="@drawable/code_99"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"/>
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/card_item_image_height"/>
                 </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginTop="@dimen/card_item_margin"
+                android:layout_marginTop="@dimen/card_item_margin_inline"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:weightSum="2">

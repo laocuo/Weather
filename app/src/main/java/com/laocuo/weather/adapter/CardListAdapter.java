@@ -39,8 +39,8 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.CardHo
         holder.text_night.setText(db.getText_night());
         holder.code_day.setImageResource(ImagesUtil.getDrawableByCode(Integer.parseInt(db.getCode_day())));
         holder.code_night.setImageResource(ImagesUtil.getDrawableByCode(Integer.parseInt(db.getCode_night())));
-        holder.temp_high.setText("最高气温:"+db.getHigh());
-        holder.temp_low.setText("最低气温:"+db.getLow());
+        holder.temp_high.setText("最高气温:"+db.getHigh()+"℃");
+        holder.temp_low.setText("最低气温:"+db.getLow()+"℃");
         holder.wind_direction.setText("风向:"+db.getWind_direction());
         holder.wind_speed.setText("风力:"+db.getWind_speed()+"级");
     }

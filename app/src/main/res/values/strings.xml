@@ -16,4 +16,6 @@
 
     <string name="day">白天</string>
     <string name="night">夜晚</string>
+
+    <string name="data_source">数据来源:心知天气</string>
 </resources>

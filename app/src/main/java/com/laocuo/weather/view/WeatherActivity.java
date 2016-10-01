@@ -43,14 +43,6 @@ import butterknife.Unbinder;
  */
 
 public class WeatherActivity extends AppCompatActivity implements IWeatherInterface{
-    @BindView(R.id.weather_refresh) Button mGetInfo;
-
-    @BindView(R.id.weather_info) TextView mWeatherInfo;
-
-    @BindView(R.id.weather_refresh1) Button mGetInfo1;
-
-    @BindView(R.id.weather_info1) TextView mWeatherInfo1;
-
     @BindView(R.id.backdrop) ImageView mBackdrop;
 
     @BindView(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbar;
@@ -108,7 +100,7 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        collapsingToolbar.setTitle(getResources().getString(R.string.wait));
+//        collapsingToolbar.setTitle(getResources().getString(R.string.wait));
         Glide.with(this).load(ImagesUtil.getRandomNavigationDrawable()).centerCrop().into(mBackdrop);
 
         mDailyListAdapter = new DailyListAdapter(this);
@@ -145,26 +137,12 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
         mUpdateWeatherThread.start();
     }
 
-    @OnClick(R.id.weather_refresh) void getInfo() {
-        mWeatherPresenter.getDailyInfo("nanjing");
-    }
-
-    @OnClick(R.id.weather_refresh1) void getInfo1() {
-        mWeatherPresenter.getLifeInfo("nanjing");
-    }
-
     @OnClick(R.id.refresh) void refresh() {
 //        mHandler.post(mUpdateWeatherInfo);
     }
 
     @Override
     public void updateNowInfo(WeatherNowInfo info) {
-        if (info != null) {
-            String result = gson.toJson(info);
-            mWeatherInfo.setText(result);
-        } else {
-            mWeatherInfo.setText("info == null");
-        }
         if (info != null) {
             WeatherNowInfo.ResultsBean resultsBean = info.getResults().get(0);
             collapsingToolbar.setTitle(formatNowInfo(resultsBean));
@@ -199,12 +177,6 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
 
     @Override
     public void updateLifeInfo(WeatherLifeInfo info) {
-        if (info != null) {
-            String result = gson.toJson(info);
-            mWeatherInfo1.setText(result);
-        } else {
-            mWeatherInfo1.setText("info == null");
-        }
     }
 
     @Override
