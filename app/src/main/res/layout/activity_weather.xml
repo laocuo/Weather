@@ -18,6 +18,14 @@
         android:layout_height="wrap_content">
     </android.support.v7.widget.RecyclerView>
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/zhishu_list"
+        android:layout_marginTop="@dimen/common_margin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/background_light">
+    </android.support.v7.widget.RecyclerView>
+
     <TextView
         android:text="@string/data_source"
         android:textSize="@dimen/small_font_size"

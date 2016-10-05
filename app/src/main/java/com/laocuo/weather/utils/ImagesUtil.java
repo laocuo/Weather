@@ -11,6 +11,24 @@ import java.util.Random;
 public class ImagesUtil {
     private static final Random RANDOM = new Random();
 
+    public static int getZhiShuDrawable(int pos) {
+        switch (pos) {
+            default:
+            case 0:
+                return R.drawable.xiche;
+            case 1:
+                return R.drawable.chuanyi;
+            case 2:
+                return R.drawable.shengbing;
+            case 3:
+                return R.drawable.yundong;
+            case 4:
+                return R.drawable.lvxing;
+            case 5:
+                return R.drawable.ziwaixian;
+        }
+    }
+
     public static int getRandomNavigationDrawable() {
         switch (RANDOM.nextInt(5)) {
             default:

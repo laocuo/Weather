@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 import com.laocuo.weather.R;
 import com.laocuo.weather.adapter.CardListAdapter;
 import com.laocuo.weather.adapter.DailyListAdapter;
+import com.laocuo.weather.adapter.ZhiShuListAdapter;
 import com.laocuo.weather.bean.WeatherAirInfo;
 import com.laocuo.weather.bean.WeatherDailyInfo;
 import com.laocuo.weather.bean.WeatherHourlyInfo;
@@ -53,6 +54,8 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
 
     @BindView(R.id.card_list) RecyclerView mCardList;
 
+    @BindView(R.id.zhishu_list) RecyclerView mZhiShuList;
+
     private WeatherPresenter mWeatherPresenter;
     private Gson gson = new Gson();
 
@@ -61,8 +64,7 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
     private class UpdateWeatherThread extends Thread {
         @Override
         public void run() {
-            mWeatherPresenter.getNowInfo("nanjing");
-            mWeatherPresenter.getDailyInfo("nanjing");
+            getLatestWeatherInfo();
         }
     }
 
@@ -72,13 +74,19 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
 
         @Override
         public void run() {
-            mWeatherPresenter.getNowInfo("nanjing");
-            mWeatherPresenter.getDailyInfo("nanjing");
+            getLatestWeatherInfo();
         }
+    }
+
+    private void getLatestWeatherInfo() {
+        mWeatherPresenter.getNowInfo("nanjing");
+        mWeatherPresenter.getDailyInfo("nanjing");
+        mWeatherPresenter.getLifeInfo("nanjing");
     }
 
     private DailyListAdapter mDailyListAdapter;
     private CardListAdapter mCardListAdapter;
+    private ZhiShuListAdapter mZhiShuListAdapter;
     private Unbinder unbinder;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -112,6 +120,11 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
         mCardList.setLayoutManager(new LinearLayoutManager(this));
         mCardList.setItemAnimator(new DefaultItemAnimator());
         mCardList.setAdapter(mCardListAdapter);
+
+        mZhiShuListAdapter = new ZhiShuListAdapter(this);
+        mZhiShuList.setLayoutManager(new GridLayoutManager(this, 3));
+        mZhiShuList.setItemAnimator(new DefaultItemAnimator());
+        mZhiShuList.setAdapter(mZhiShuListAdapter);
     }
 
     @Override
@@ -177,6 +190,9 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
 
     @Override
     public void updateLifeInfo(WeatherLifeInfo info) {
+        if (info != null) {
+            mZhiShuListAdapter.setZhiShuInfo(info);
+        }
     }
 
     @Override

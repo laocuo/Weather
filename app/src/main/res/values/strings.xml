@@ -18,4 +18,15 @@
     <string name="night">夜晚</string>
 
     <string name="data_source">数据来源:心知天气</string>
+
+    <string name="yundong">运动指数</string>
+    <string name="xiche">洗车指数</string>
+    <string name="ziwaixian">紫外线指数</string>
+    <string name="guangjie">逛街指数</string>
+    <string name="fangshai">防晒指数</string>
+    <string name="diaoyu">钓鱼指数</string>
+    <string name="chuanyi">穿衣指数</string>
+    <string name="shushi">舒适指数</string>
+    <string name="shengbing">生病指数</string>
+    <string name="lvxing">旅行指数</string>
 </resources>
