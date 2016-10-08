@@ -56,6 +56,18 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
 
     @BindView(R.id.zhishu_list) RecyclerView mZhiShuList;
 
+    @BindView(R.id.now_feels_like) TextView mfeels_like;
+
+    @BindView(R.id.now_humidity) TextView mhumidity;
+
+    @BindView(R.id.now_visibility) TextView mvisibility;
+
+    @BindView(R.id.now_pressure) TextView mpressure;
+
+    @BindView(R.id.now_wind_direction) TextView mwind_direction;
+
+    @BindView(R.id.now_wind_scale) TextView mwind_scale;
+
     private WeatherPresenter mWeatherPresenter;
     private Gson gson = new Gson();
 
@@ -87,7 +99,7 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
     private DailyListAdapter mDailyListAdapter;
     private CardListAdapter mCardListAdapter;
     private ZhiShuListAdapter mZhiShuListAdapter;
-    private Unbinder unbinder;
+//    private Unbinder unbinder;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -151,7 +163,7 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
     }
 
     @OnClick(R.id.refresh) void refresh() {
-//        mHandler.post(mUpdateWeatherInfo);
+        mHandler.post(mUpdateWeatherInfo);
     }
 
     @Override
@@ -159,6 +171,12 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
         if (info != null) {
             WeatherNowInfo.ResultsBean resultsBean = info.getResults().get(0);
             collapsingToolbar.setTitle(formatNowInfo(resultsBean));
+            mfeels_like.setText("体感温度:"+resultsBean.getNow().getFeels_like()+"℃");
+            mhumidity.setText("相对湿度:"+resultsBean.getNow().getHumidity()+"%");
+            mvisibility.setText("能见度:"+resultsBean.getNow().getVisibility()+"km");
+            mpressure.setText("气压:"+resultsBean.getNow().getPressure()+"mb");
+            mwind_direction.setText("风向:"+resultsBean.getNow().getWind_direction()+"风");
+            mwind_scale.setText("风力:"+resultsBean.getNow().getWind_scale()+"级");
         }
     }
 
@@ -176,7 +194,7 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
     public void updateDailyInfo(WeatherDailyInfo info) {
         if (info != null) {
             mDailyListAdapter.setDailyInfo(info);
-            mCardListAdapter.setCardInfo(info);
+//            mCardListAdapter.setCardInfo(info);
         }
     }
 

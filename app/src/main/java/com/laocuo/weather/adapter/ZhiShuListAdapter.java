@@ -1,6 +1,7 @@
 package com.laocuo.weather.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,8 +34,9 @@ public class ZhiShuListAdapter extends RecyclerView.Adapter<ZhiShuListAdapter.Zh
     @Override
     public void onBindViewHolder(ZhiShuInfoHolder holder, int position) {
         WeatherLifeInfo.ResultsBean.SuggestionBean db = info.getResults().get(0).getSuggestion();
-        holder.title.setCompoundDrawables(null,
-                mContext.getDrawable(ImagesUtil.getZhiShuDrawable(position)), null, null);
+        Drawable d = mContext.getDrawable(ImagesUtil.getZhiShuDrawable(position));
+        d.setBounds(0, 0, d.getMinimumWidth(), d.getMinimumHeight());
+        holder.title.setCompoundDrawables(null, d, null, null);
         holder.title.setText(getTitleText(position));
         holder.content.setText(getContentText(db, position));
     }

@@ -4,6 +4,7 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:background="@color/list_bg">
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/daily_list"
         android:layout_width="match_parent"
@@ -15,8 +16,11 @@
         android:id="@+id/card_list"
         android:layout_marginTop="@dimen/common_margin"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:visibility="gone">
     </android.support.v7.widget.RecyclerView>
+
+    <include layout="@layout/now_item"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/zhishu_list"
