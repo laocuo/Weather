@@ -2,6 +2,7 @@ package com.laocuo.weather.view;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -201,6 +202,12 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
         int id = item.getItemId();
         if (id == R.id.shareWeather) {
             L.d("shareWeather");
+            if (!TextUtils.isEmpty(currentWeather)) {
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.putExtra(Intent.EXTRA_TEXT, currentWeather);
+                shareIntent.setType("text/plain");
+                startActivity(shareIntent);
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -322,6 +329,7 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
         }
     }
 
+    private String currentWeather;
     @Override
     public void updateNowInfo(WeatherNowInfo info) {
         if (info != null) {
@@ -333,6 +341,7 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
             mpressure.setText("气压:"+resultsBean.getNow().getPressure()+"mb");
             mwind_direction.setText("风向:"+resultsBean.getNow().getWind_direction()+"风");
             mwind_scale.setText("风力:"+resultsBean.getNow().getWind_scale()+"级");
+            currentWeather = collapsingToolbar.getTitle().toString();
         }
     }
 
