@@ -6,6 +6,9 @@
 
     <string name="splash_network_err">网络连接错误!!</string>
 
+    <string name="get_location_permission_err">没有获取定位权限!</string>
+    <string name="get_location_err">获取定位信息错误!</string>
+
     <string name="NowInfo">NowInfo</string>
     <string name="FutureInfo">FutureInfo</string>
     <string name="LifeInfo">LifeInfo</string>
