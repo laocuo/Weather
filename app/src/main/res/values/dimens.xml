@@ -26,4 +26,9 @@
     <dimen name="small_font_size">10sp</dimen>
     <dimen name="data_source_height">60dp</dimen>
     <dimen name="common_margin">10dp</dimen>
+
+    <dimen name="widget_margin">62dp</dimen>
+    <dimen name="widget_margin_s">18dp</dimen>
+    <dimen name="widget_text_size">50sp</dimen>
+    <dimen name="widget_text_size_s">16sp</dimen>
 </resources>

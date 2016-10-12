@@ -103,6 +103,11 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
 
     private final String CITY_KEY = "pref_city";
 
+    private final String WIDGET_LOCATION = "widget_location";
+    private final String WIDGET_TEMPERATURE = "widget_temperature";
+    private final String WIDGET_TEXT = "widget_text";
+    private final String WIDGET_CODE = "widget_code";
+
     private WeatherPresenter mWeatherPresenter;
     private Gson gson = new Gson();
 
@@ -152,6 +157,7 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
 //        unbinder.unbind();
         super.onDestroy();
         removeLocationListener();
+        mWeatherPresenter.onExit();
     }
 
     private void removeLocationListener() {
@@ -342,7 +348,18 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
             mwind_direction.setText("风向:"+resultsBean.getNow().getWind_direction()+"风");
             mwind_scale.setText("风力:"+resultsBean.getNow().getWind_scale()+"级");
             currentWeather = collapsingToolbar.getTitle().toString();
+            saveNowInfo(resultsBean);
         }
+    }
+
+    private void saveNowInfo(WeatherNowInfo.ResultsBean resultsBean) {
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(mContext).edit();
+        editor.putString(WIDGET_LOCATION, resultsBean.getLocation().getName());
+        editor.putString(WIDGET_TEMPERATURE, resultsBean.getNow().getTemperature()+"℃");
+        editor.putString(WIDGET_TEXT, resultsBean.getNow().getText());
+        editor.putString(WIDGET_CODE, resultsBean.getNow().getCode());
+        editor.commit();
+        sendBroadcast(new Intent("android.appwidget.action.WEATHER_UPDATE"));
     }
 
     private CharSequence formatNowInfo(WeatherNowInfo.ResultsBean resultsBean) {

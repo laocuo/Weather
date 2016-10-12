@@ -187,4 +187,8 @@ public class WeatherPresenter extends BasePresenter{
                 });
         addSubscription(subscription);
     }
+
+    public void onExit() {
+        unsubcrible();
+    }
 }
