@@ -18,7 +18,8 @@ import com.laocuo.weather.utils.L;
 
 public class WeatherHeadInfoView extends View {
     private float mPercent = 1.0f;
-    private float mTextDisappearPercent = 0.4f;
+    private float mTextDisappearPercentS = 0.4f;
+    private float mTextDisappearPercentE = 0.3f;
     private int widthsize, heightsize;
     private Paint mPaint;
     private WeatherNowInfo.ResultsBean mWeatherInfo = null;
@@ -60,67 +61,46 @@ public class WeatherHeadInfoView extends View {
     protected void onDraw(Canvas canvas) {
         if (mWeatherInfo == null) {
 //            super.onDraw(canvas);
-            drawInfo_Test(canvas);
+            String temp = "21℃";
+            String text = "多云";
+            String city = "南京";
+            drawInfo(canvas, temp, text, city);
         } else {
 //            float scale = (mPercent*(1 - mMinPercent)) + mMinPercent;
-            drawInfo(canvas);
+            String temp = mWeatherInfo.getNow().getTemperature()+"℃";
+            String text = mWeatherInfo.getNow().getText();
+            String city = mWeatherInfo.getLocation().getName();
+            drawInfo(canvas, temp, text, city);
         }
     }
 
-    private void drawInfo(Canvas canvas) {
+    private void drawInfo(Canvas canvas, String temp, String text, String city) {
         L.d("mPercent="+mPercent);
         Rect r = new Rect();
-        String temp = mWeatherInfo.getNow().getTemperature()+"℃";
         int start;
         int bottom = heightsize - mTextGapSmall;
-        mPaint.setTextSize((mTextSizeBig-mTextSizeSmall)*mPercent+mTextSizeSmall);
+
+        mPaint.setTextSize((mTextSizeBig-mTextSizeMiddle)*mPercent+mTextSizeMiddle);
         mPaint.getTextBounds(temp, 0, temp.length(), r);
         start = (int) ((((widthsize-r.width())/2)-mTextGapStart)*mPercent + mTextGapStart);
         canvas.drawText(temp, start, bottom, mPaint);
         bottom -= (r.height()+(mTextGapBig-mTextGapSmall)*mPercent+mTextGapSmall);
 
-        String text = mWeatherInfo.getNow().getText();
         mPaint.setTextSize(mTextSizeSmall);
         mPaint.getTextBounds(text, 0, text.length(), r);
         start = (int) ((((widthsize - r.width()) / 2) - mTextGapStart) * mPercent + mTextGapStart);
-        if (mPercent > mTextDisappearPercent) {
+        if (mPercent > mTextDisappearPercentS) {
             canvas.drawText(text, start, bottom, mPaint);
             bottom -= (r.height() + (mTextGapMiddle - mTextGapSmall) * mPercent + mTextGapSmall);
         } else {
-            bottom -= (r.height()*(mPercent/mTextDisappearPercent) + (mTextGapMiddle - mTextGapSmall) * mPercent + mTextGapSmall);
+            if (mPercent > mTextDisappearPercentE) {
+                mPaint.setAlpha((int) (255 * (mPercent - mTextDisappearPercentE) / (mTextDisappearPercentS-mTextDisappearPercentE)));
+                canvas.drawText(text, start, bottom, mPaint);
+                mPaint.setAlpha(255);
+            }
+            bottom -= (r.height()*(mPercent/mTextDisappearPercentS) + (mTextGapMiddle - mTextGapSmall) * mPercent + mTextGapSmall);
         }
 
-        String city = mWeatherInfo.getLocation().getName();
-        mPaint.setTextSize((mTextSizeMiddle-mTextSizeSmall)*mPercent+mTextSizeSmall);
-        mPaint.getTextBounds(city, 0, city.length(), r);
-        start = (int) ((((widthsize-r.width())/2)-mTextGapStart)*mPercent + mTextGapStart);
-        canvas.drawText(city, start, bottom, mPaint);
-    }
-
-    private void drawInfo_Test(Canvas canvas) {
-        L.d("mPercent="+mPercent);
-        Rect r = new Rect();
-        String temp = "21℃";
-        int start;
-        int bottom = heightsize - mTextGapSmall;
-        mPaint.setTextSize((mTextSizeBig-mTextSizeSmall)*mPercent+mTextSizeSmall);
-        mPaint.getTextBounds(temp, 0, temp.length(), r);
-        start = (int) ((((widthsize-r.width())/2)-mTextGapStart)*mPercent + mTextGapStart);
-        canvas.drawText(temp, start, bottom, mPaint);
-        bottom -= (r.height()+(mTextGapBig-mTextGapSmall)*mPercent+mTextGapSmall);
-
-        String text = "duoyun";
-        mPaint.setTextSize(mTextSizeSmall);
-        mPaint.getTextBounds(text, 0, text.length(), r);
-        start = (int) ((((widthsize - r.width()) / 2) - mTextGapStart) * mPercent + mTextGapStart);
-        if (mPercent > mTextDisappearPercent) {
-            canvas.drawText(text, start, bottom, mPaint);
-            bottom -= (r.height() + (mTextGapMiddle - mTextGapSmall) * mPercent + mTextGapSmall);
-        } else {
-            bottom -= (r.height()*(mPercent/mTextDisappearPercent) + (mTextGapMiddle - mTextGapSmall) * mPercent + mTextGapSmall);
-        }
-
-        String city = "nanjing";
         mPaint.setTextSize((mTextSizeMiddle-mTextSizeSmall)*mPercent+mTextSizeSmall);
         mPaint.getTextBounds(city, 0, city.length(), r);
         start = (int) ((((widthsize-r.width())/2)-mTextGapStart)*mPercent + mTextGapStart);
