@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="detail_backdrop_height">384dp</dimen>
+    <dimen name="appbar_height">400dp</dimen>
+    <dimen name="appbar_min_height">180dp</dimen>
+    <dimen name="appbar_head_height">280dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
 
     <dimen name="daily_item_margin">1dp</dimen>

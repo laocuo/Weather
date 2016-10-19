@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -45,8 +46,10 @@ import com.laocuo.weather.bean.WeatherNowInfo;
 import com.laocuo.weather.bean.WeatherSunInfo;
 import com.laocuo.weather.presenter.impl.WeatherPresenter;
 import com.laocuo.weather.presenter.model.IWeatherInterface;
+import com.laocuo.weather.utils.DensityUtil;
 import com.laocuo.weather.utils.ImagesUtil;
 import com.laocuo.weather.utils.L;
+import com.laocuo.weather.view.customize.WeatherHeadInfoView;
 
 import java.io.IOException;
 import java.util.List;
@@ -62,6 +65,9 @@ import butterknife.Unbinder;
  */
 
 public class WeatherActivity extends AppCompatActivity implements IWeatherInterface {
+    @BindView(R.id.appbar)
+    AppBarLayout mAppBarLayout;
+
     @BindView(R.id.weather)
     CoordinatorLayout mCoordinatorLayout;
 
@@ -100,6 +106,9 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
 
     @BindView(R.id.now_wind_scale)
     TextView mwind_scale;
+
+    @BindView(R.id.weather_head)
+    WeatherHeadInfoView mHeadInfoView;
 
     private final String CITY_KEY = "pref_city";
 
@@ -141,6 +150,8 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
     private Context mContext;
     //    private Unbinder unbinder;
 
+    private int mMinHeadHeight;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -173,6 +184,7 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
 
     private void init() {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_menu);
         setSupportActionBar(toolbar);
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 //        collapsingToolbar.setTitle(getResources().getString(R.string.wait));
@@ -195,6 +207,17 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
 
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         mLocationListener = new WeatherLocationListener();
+
+        mMinHeadHeight = DensityUtil.dip2px(this, 196);
+        L.d("mMinHeadHeight="+mMinHeadHeight);
+        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                L.d("verticalOffset="+verticalOffset);
+                float percent = 1 + (float)verticalOffset/(float)mMinHeadHeight;
+                mHeadInfoView.setPercent(percent);
+            }
+        });
     }
 
     @Override
@@ -340,14 +363,15 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
     public void updateNowInfo(WeatherNowInfo info) {
         if (info != null) {
             WeatherNowInfo.ResultsBean resultsBean = info.getResults().get(0);
-            collapsingToolbar.setTitle(formatNowInfo(resultsBean));
+            currentWeather = formatNowInfo(resultsBean).toString();
+//            collapsingToolbar.setTitle(currentWeather);
             mfeels_like.setText("体感温度:"+resultsBean.getNow().getFeels_like()+"℃");
             mhumidity.setText("相对湿度:"+resultsBean.getNow().getHumidity()+"%");
             mvisibility.setText("能见度:"+resultsBean.getNow().getVisibility()+"km");
             mpressure.setText("气压:"+resultsBean.getNow().getPressure()+"mb");
             mwind_direction.setText("风向:"+resultsBean.getNow().getWind_direction()+"风");
             mwind_scale.setText("风力:"+resultsBean.getNow().getWind_scale()+"级");
-            currentWeather = collapsingToolbar.getTitle().toString();
+            mHeadInfoView.setWeatherInfo(resultsBean);
             saveNowInfo(resultsBean);
         }
     }
