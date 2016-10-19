@@ -148,10 +148,8 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
     private WeatherLocationListener mLocationListener;
 
     private Context mContext;
-    //    private Unbinder unbinder;
 
-    private int mMinHeadHeight;
-
+    private AppBarOffsetListener mAppBarOffsetListener;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -167,6 +165,7 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
     protected void onDestroy() {
 //        unbinder.unbind();
         super.onDestroy();
+        mAppBarLayout.removeOnOffsetChangedListener(mAppBarOffsetListener);
         removeLocationListener();
         mWeatherPresenter.onExit();
     }
@@ -208,16 +207,8 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         mLocationListener = new WeatherLocationListener();
 
-        mMinHeadHeight = DensityUtil.dip2px(this, 196);
-        L.d("mMinHeadHeight="+mMinHeadHeight);
-        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                L.d("verticalOffset="+verticalOffset);
-                float percent = 1 + (float)verticalOffset/(float)mMinHeadHeight;
-                mHeadInfoView.setPercent(percent);
-            }
-        });
+        mAppBarOffsetListener = new AppBarOffsetListener();
+        mAppBarLayout.addOnOffsetChangedListener(mAppBarOffsetListener);
     }
 
     @Override
@@ -421,5 +412,15 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
 
     @Override
     public void updateSunInfo(WeatherSunInfo info) {
+    }
+
+    private class AppBarOffsetListener implements   AppBarLayout.OnOffsetChangedListener {
+
+        @Override
+        public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+            int totalScrollRange = appBarLayout.getTotalScrollRange();
+            float percent = 1 + (float)verticalOffset/(float)totalScrollRange;
+            mHeadInfoView.setPercent(percent);
+        }
     }
 }

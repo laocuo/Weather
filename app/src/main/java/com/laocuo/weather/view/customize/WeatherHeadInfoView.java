@@ -36,6 +36,7 @@ public class WeatherHeadInfoView extends View {
         mContext = context;
         mPaint = new Paint();
         mPaint.setStrokeWidth(2.0f);
+        mPaint.setAntiAlias(true);
         mPaint.setColor(Color.WHITE);
         mTextSizeBig = DensityUtil.sp2px(context, 100);
         mTextSizeMiddle = DensityUtil.sp2px(context, 30);
@@ -75,7 +76,6 @@ public class WeatherHeadInfoView extends View {
     }
 
     private void drawInfo(Canvas canvas, String temp, String text, String city) {
-        L.d("mPercent="+mPercent);
         Rect r = new Rect();
         int start;
         int bottom = heightsize - mTextGapSmall;
