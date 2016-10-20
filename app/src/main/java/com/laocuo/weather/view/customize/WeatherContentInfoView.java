@@ -37,7 +37,7 @@ public class WeatherContentInfoView extends View {
     private int mCircleRadius;
     private ArrayList<Point> mPoints = new ArrayList<Point>();
     private Context mContext;
-    private int scale = 20;
+    private int scale = 14;
 
     public WeatherContentInfoView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -63,21 +63,34 @@ public class WeatherContentInfoView extends View {
         }
     }
 
+    private void setTestData(){
+        mTempHighList.clear();
+        mTempLowList.clear();
+        mTextDayList.clear();
+        if (mTempHighList.size() < 1) {
+            mTempHighList.add(28);
+            mTempHighList.add(20);
+            mTempHighList.add(26);
+        }
+        if (mTempLowList.size() < 1) {
+            mTempLowList.add(20);
+            mTempLowList.add(16);
+            mTempLowList.add(24);
+        }
+        if (mTextDayList.size() < 1) {
+            mTextDayList.add("多云");
+            mTextDayList.add("多云");
+            mTextDayList.add("多云");
+        }
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         if (mWeatherInfo == null) {
-            if (mTempHighList.size() < 1) {
-                mTempHighList.add(28);
-                mTempHighList.add(20);
-                mTempHighList.add(28);
-            }
-            if (mTextDayList.size() < 1) {
-                mTextDayList.add("多云");
-                mTextDayList.add("多云");
-                mTextDayList.add("多云");
-            }
+            setTestData();
             drawInfo(canvas);
         } else {
+//            setTestData();
             drawInfo(canvas);
         }
     }
@@ -90,7 +103,7 @@ public class WeatherContentInfoView extends View {
         }
         int averagetemp = alltemp/mTempHighList.size();
         int averagew  = widthsize/(mTempHighList.size()+1);
-        int averageh = heightsize/2;
+        int averageh = heightsize*3/4;
         if (mPercent > 0) {
             Path path = new Path();
             path.moveTo(0, averageh + (heightsize - averageh) * (1 - mPercent));
@@ -142,7 +155,7 @@ public class WeatherContentInfoView extends View {
                 mPaint.setAlpha(255);
             }
             canvas.drawCircle(p.x, p.y, mCircleRadius, mPaint);
-            mPaint.setColor(mContext.getResources().getColor(R.color.colorPrimary));
+            mPaint.setColor(mContext.getResources().getColor(R.color.colorPrimaryDark));
             canvas.drawCircle(p.x, p.y, mCircleRadius/2, mPaint);
             mPaint.setColor(Color.WHITE);
         }
@@ -156,6 +169,9 @@ public class WeatherContentInfoView extends View {
     public void setWeatherInfo(WeatherDailyInfo.ResultsBean weatherInfo) {
         mWeatherInfo = weatherInfo;
         int size = mWeatherInfo.getDaily().size();
+        mTempHighList.clear();
+        mTempLowList.clear();
+        mTextDayList.clear();
         for (int i=0;i<size;i++) {
             mTempHighList.add(Integer.valueOf(mWeatherInfo.getDaily().get(i).getHigh()));
             mTempLowList.add(Integer.valueOf(mWeatherInfo.getDaily().get(i).getLow()));
