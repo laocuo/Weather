@@ -46,9 +46,9 @@ import com.laocuo.weather.bean.WeatherNowInfo;
 import com.laocuo.weather.bean.WeatherSunInfo;
 import com.laocuo.weather.presenter.impl.WeatherPresenter;
 import com.laocuo.weather.presenter.model.IWeatherInterface;
-import com.laocuo.weather.utils.DensityUtil;
 import com.laocuo.weather.utils.ImagesUtil;
 import com.laocuo.weather.utils.L;
+import com.laocuo.weather.view.customize.WeatherContentInfoView;
 import com.laocuo.weather.view.customize.WeatherHeadInfoView;
 
 import java.io.IOException;
@@ -71,11 +71,11 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
     @BindView(R.id.weather)
     CoordinatorLayout mCoordinatorLayout;
 
-    @BindView(R.id.backdrop)
-    ImageView mBackdrop;
-
     @BindView(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbar;
+
+    @BindView(R.id.backdrop)
+    ImageView mBackdrop;
 
     @BindView(R.id.daily_list)
     RecyclerView mDailyList;
@@ -109,6 +109,9 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
 
     @BindView(R.id.weather_head)
     WeatherHeadInfoView mHeadInfoView;
+
+    @BindView(R.id.weather_content)
+    WeatherContentInfoView mContentInfoView;
 
     private final String CITY_KEY = "pref_city";
 
@@ -209,6 +212,11 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
 
         mAppBarOffsetListener = new AppBarOffsetListener();
         mAppBarLayout.addOnOffsetChangedListener(mAppBarOffsetListener);
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
     }
 
     @Override
@@ -390,8 +398,9 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
     @Override
     public void updateDailyInfo(WeatherDailyInfo info) {
         if (info != null) {
-            mDailyListAdapter.setDailyInfo(info);
-//            mCardListAdapter.setCardInfo(info);
+            mDailyListAdapter.setDailyInfo(info.getResults().get(0));
+//            mCardListAdapter.setCardInfo(info.getResults().get(0));
+            mContentInfoView.setWeatherInfo(info.getResults().get(0));
         }
     }
 
@@ -421,6 +430,7 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
             int totalScrollRange = appBarLayout.getTotalScrollRange();
             float percent = 1 + (float)verticalOffset/(float)totalScrollRange;
             mHeadInfoView.setPercent(percent);
+            mContentInfoView.setPercent(percent);
         }
     }
 }

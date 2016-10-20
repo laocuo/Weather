@@ -18,7 +18,7 @@ import com.laocuo.weather.utils.ImagesUtil;
 
 public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.CardHolder> {
     private Context mContext;
-    private WeatherDailyInfo info;
+    private WeatherDailyInfo.ResultsBean info;
 
     public CardListAdapter(Context context) {
         mContext = context;
@@ -33,7 +33,7 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.CardHo
 
     @Override
     public void onBindViewHolder(CardHolder holder, int position) {
-        WeatherDailyInfo.ResultsBean.DailyBean db = info.getResults().get(0).getDaily().get(position);
+        WeatherDailyInfo.ResultsBean.DailyBean db = info.getDaily().get(position);
         holder.date.setText(db.getDate());
         holder.text_day.setText(db.getText_day());
         holder.text_night.setText(db.getText_night());
@@ -70,10 +70,10 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.CardHo
     }
     @Override
     public int getItemCount() {
-        return info == null?0:info.getResults().get(0).getDaily().size();
+        return info == null?0:info.getDaily().size();
     }
 
-    public void setCardInfo(WeatherDailyInfo info) {
+    public void setCardInfo(WeatherDailyInfo.ResultsBean info) {
         this.info = info;
         notifyDataSetChanged();
     }

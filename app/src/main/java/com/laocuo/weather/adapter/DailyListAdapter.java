@@ -19,7 +19,7 @@ import com.laocuo.weather.utils.ImagesUtil;
 
 public class DailyListAdapter extends RecyclerView.Adapter<DailyListAdapter.DailyInfoHolder> {
     private Context mContext;
-    private WeatherDailyInfo info;
+    private WeatherDailyInfo.ResultsBean info;
     public DailyListAdapter(Context context) {
         this.mContext = context;
     }
@@ -33,7 +33,7 @@ public class DailyListAdapter extends RecyclerView.Adapter<DailyListAdapter.Dail
 
     @Override
     public void onBindViewHolder(DailyInfoHolder holder, int position) {
-        WeatherDailyInfo.ResultsBean.DailyBean db = info.getResults().get(0).getDaily().get(position);
+        WeatherDailyInfo.ResultsBean.DailyBean db = info.getDaily().get(position);
         holder.date.setText(db.getDate());
         holder.text_day.setText("日:"+db.getText_day());
         holder.text_night.setText("夜:"+db.getText_night());
@@ -44,7 +44,7 @@ public class DailyListAdapter extends RecyclerView.Adapter<DailyListAdapter.Dail
 
     @Override
     public int getItemCount() {
-        return info == null?0:info.getResults().get(0).getDaily().size();
+        return info == null?0:info.getDaily().size();
     }
 
     public class DailyInfoHolder extends RecyclerView.ViewHolder {
@@ -64,7 +64,7 @@ public class DailyListAdapter extends RecyclerView.Adapter<DailyListAdapter.Dail
             temp = (TextView) itemView.findViewById(R.id.daily_item_temp);
         }
     }
-    public void setDailyInfo(WeatherDailyInfo dailyInfo) {
+    public void setDailyInfo(WeatherDailyInfo.ResultsBean dailyInfo) {
         info = dailyInfo;
         notifyDataSetChanged();
     }

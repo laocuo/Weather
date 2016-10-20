@@ -10,7 +10,6 @@ import android.view.View;
 
 import com.laocuo.weather.bean.WeatherNowInfo;
 import com.laocuo.weather.utils.DensityUtil;
-import com.laocuo.weather.utils.L;
 
 /**
  * Created by hoperun on 10/18/16.
@@ -23,28 +22,25 @@ public class WeatherHeadInfoView extends View {
     private int widthsize, heightsize;
     private Paint mPaint;
     private WeatherNowInfo.ResultsBean mWeatherInfo = null;
-    private Context mContext;
     private int mTextSizeBig, mTextSizeMiddle, mTextSizeSmall;
-    private int mTextGapBig, mTextGapMiddle, mTextGapSmall;
-    private int mTextGapStart;
-    public WeatherHeadInfoView(Context context) {
-        super(context, null);
-    }
+    private int mTextGapBig, mTextGapMiddle, mTextGapMiddle1, mTextGapSmall;
+    private int mTextGapStart,mTextGapBottom;
 
     public WeatherHeadInfoView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mContext = context;
         mPaint = new Paint();
         mPaint.setStrokeWidth(2.0f);
         mPaint.setAntiAlias(true);
         mPaint.setColor(Color.WHITE);
         mTextSizeBig = DensityUtil.sp2px(context, 100);
         mTextSizeMiddle = DensityUtil.sp2px(context, 30);
+        mTextGapMiddle1 = DensityUtil.sp2px(context, 40);
         mTextSizeSmall = DensityUtil.sp2px(context, 20);
         mTextGapBig = DensityUtil.dip2px(context, 60);
         mTextGapMiddle = DensityUtil.dip2px(context, 20);
         mTextGapSmall = DensityUtil.dip2px(context, 4);
         mTextGapStart = DensityUtil.dip2px(context, 20);
+        mTextGapBottom = DensityUtil.dip2px(context, 90);
     }
 
     @Override
@@ -65,20 +61,37 @@ public class WeatherHeadInfoView extends View {
             String temp = "21℃";
             String text = "多云";
             String city = "南京";
-            drawInfo(canvas, temp, text, city);
+            String airquality = "55 良";
+            drawInfo(canvas, temp, text, city, airquality);
         } else {
 //            float scale = (mPercent*(1 - mMinPercent)) + mMinPercent;
             String temp = mWeatherInfo.getNow().getTemperature()+"℃";
             String text = mWeatherInfo.getNow().getText();
             String city = mWeatherInfo.getLocation().getName();
-            drawInfo(canvas, temp, text, city);
+            String airquality = "55 良";
+            drawInfo(canvas, temp, text, city, airquality);
         }
     }
 
-    private void drawInfo(Canvas canvas, String temp, String text, String city) {
+    private void drawInfo(Canvas canvas, String temp, String text, String city, String airquality) {
         Rect r = new Rect();
         int start;
-        int bottom = heightsize - mTextGapSmall;
+        int bottom = (int) (heightsize - mTextGapBottom*mPercent);
+
+        mPaint.setTextSize(mTextSizeSmall);
+        mPaint.getTextBounds(airquality, 0, airquality.length(), r);
+        start = (int) ((((widthsize - r.width()) / 2) - mTextGapStart) * mPercent + mTextGapStart);
+        if (mPercent > mTextDisappearPercentS) {
+            canvas.drawText(airquality, start, bottom, mPaint);
+            bottom -= (r.height() + (mTextGapMiddle1 - mTextGapSmall) * mPercent + mTextGapSmall);
+        } else {
+            if (mPercent > mTextDisappearPercentE) {
+                mPaint.setAlpha((int) (255 * (mPercent - mTextDisappearPercentE) / (mTextDisappearPercentS-mTextDisappearPercentE)));
+                canvas.drawText(airquality, start, bottom, mPaint);
+                mPaint.setAlpha(255);
+            }
+            bottom -= (r.height()*(mPercent/mTextDisappearPercentS) + (mTextGapMiddle1 - mTextGapSmall) * mPercent + mTextGapSmall);
+        }
 
         mPaint.setTextSize((mTextSizeBig-mTextSizeMiddle)*mPercent+mTextSizeMiddle);
         mPaint.getTextBounds(temp, 0, temp.length(), r);

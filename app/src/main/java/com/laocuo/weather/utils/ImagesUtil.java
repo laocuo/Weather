@@ -1,5 +1,9 @@
 package com.laocuo.weather.utils;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+
 import com.laocuo.weather.R;
 
 import java.util.Random;
@@ -127,5 +131,18 @@ public class ImagesUtil {
             case 38:
                 return R.drawable.code_38;
         }
+    }
+
+    public static Bitmap getResizedBitmap(Bitmap b, int widthsize, int heightsize) {
+        Bitmap resizedB;
+        int w = b.getWidth();
+        int h = b.getHeight();
+        int scaleW = widthsize/w;
+        int scaleH = heightsize/h;
+        int scale = scaleW>scaleH?scaleH:scaleW;
+        Matrix matrix = new Matrix();
+        matrix.postScale(scale, scale);
+        resizedB = Bitmap.createBitmap(b, 0, 0, widthsize, heightsize, matrix, true);
+        return resizedB;
     }
 }
