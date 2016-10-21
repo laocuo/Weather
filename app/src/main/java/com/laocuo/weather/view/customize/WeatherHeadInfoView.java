@@ -17,6 +17,7 @@ import com.laocuo.weather.utils.DensityUtil;
 
 public class WeatherHeadInfoView extends View {
     private float mPercent = 1.0f;
+    private int mVerticalOffset;
     private float mTextDisappearPercentS = 0.4f;
     private float mTextDisappearPercentE = 0.3f;
     private int widthsize, heightsize;
@@ -24,7 +25,8 @@ public class WeatherHeadInfoView extends View {
     private WeatherNowInfo.ResultsBean mWeatherInfo = null;
     private int mTextSizeBig, mTextSizeMiddle, mTextSizeSmall;
     private int mTextGapBig, mTextGapMiddle, mTextGapMiddle1, mTextGapSmall;
-    private int mTextGapStart,mTextGapBottom;
+    private int mTextGapStart,mTextGapTop, mTextGapBottom;
+    private int mActionBarHeight;
 
     public WeatherHeadInfoView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -41,6 +43,8 @@ public class WeatherHeadInfoView extends View {
         mTextGapSmall = DensityUtil.dip2px(context, 4);
         mTextGapStart = DensityUtil.dip2px(context, 20);
         mTextGapBottom = DensityUtil.dip2px(context, 90);
+        mTextGapTop = DensityUtil.dip2px(context, 2);
+        mActionBarHeight = DensityUtil.getActionBarSize(context);
     }
 
     @Override
@@ -76,52 +80,52 @@ public class WeatherHeadInfoView extends View {
     private void drawInfo(Canvas canvas, String temp, String text, String city, String airquality) {
         Rect r = new Rect();
         int start;
-        int bottom = (int) (heightsize - mTextGapBottom*mPercent);
+        int bottom = mActionBarHeight - mVerticalOffset;
 
-        mPaint.setTextSize(mTextSizeSmall);
-        mPaint.getTextBounds(airquality, 0, airquality.length(), r);
-        start = (int) ((((widthsize - r.width()) / 2) - mTextGapStart) * mPercent + mTextGapStart);
-        if (mPercent > mTextDisappearPercentS) {
-            canvas.drawText(airquality, start, bottom, mPaint);
-            bottom -= (r.height() + (mTextGapMiddle1 - mTextGapSmall) * mPercent + mTextGapSmall);
-        } else {
-            if (mPercent > mTextDisappearPercentE) {
-                mPaint.setAlpha((int) (255 * (mPercent - mTextDisappearPercentE) / (mTextDisappearPercentS-mTextDisappearPercentE)));
-                canvas.drawText(airquality, start, bottom, mPaint);
-                mPaint.setAlpha(255);
-            }
-            bottom -= (r.height()*(mPercent/mTextDisappearPercentS) + (mTextGapMiddle1 - mTextGapSmall) * mPercent + mTextGapSmall);
-        }
-
-        mPaint.setTextSize((mTextSizeBig-mTextSizeMiddle)*mPercent+mTextSizeMiddle);
-        mPaint.getTextBounds(temp, 0, temp.length(), r);
+        mPaint.setTextSize((mTextSizeMiddle-mTextSizeSmall)*mPercent+mTextSizeSmall);
+        mPaint.getTextBounds(city, 0, city.length(), r);
         start = (int) ((((widthsize-r.width())/2)-mTextGapStart)*mPercent + mTextGapStart);
-        canvas.drawText(temp, start, bottom, mPaint);
-        bottom -= (r.height()+(mTextGapBig-mTextGapSmall)*mPercent+mTextGapSmall);
+        bottom += r.height();
+        canvas.drawText(city, start, bottom, mPaint);
 
-        mPaint.setTextSize(mTextSizeSmall);
+        mPaint.setTextSize(mTextSizeSmall * mPercent);
         mPaint.getTextBounds(text, 0, text.length(), r);
         start = (int) ((((widthsize - r.width()) / 2) - mTextGapStart) * mPercent + mTextGapStart);
+        bottom += (r.height() + (mTextGapMiddle - mTextGapSmall) * mPercent + mTextGapSmall);
         if (mPercent > mTextDisappearPercentS) {
             canvas.drawText(text, start, bottom, mPaint);
-            bottom -= (r.height() + (mTextGapMiddle - mTextGapSmall) * mPercent + mTextGapSmall);
         } else {
             if (mPercent > mTextDisappearPercentE) {
                 mPaint.setAlpha((int) (255 * (mPercent - mTextDisappearPercentE) / (mTextDisappearPercentS-mTextDisappearPercentE)));
                 canvas.drawText(text, start, bottom, mPaint);
                 mPaint.setAlpha(255);
             }
-            bottom -= (r.height()*(mPercent/mTextDisappearPercentS) + (mTextGapMiddle - mTextGapSmall) * mPercent + mTextGapSmall);
         }
 
-        mPaint.setTextSize((mTextSizeMiddle-mTextSizeSmall)*mPercent+mTextSizeSmall);
-        mPaint.getTextBounds(city, 0, city.length(), r);
+        mPaint.setTextSize((mTextSizeBig-mTextSizeMiddle)*mPercent+mTextSizeMiddle);
+        mPaint.getTextBounds(temp, 0, temp.length(), r);
         start = (int) ((((widthsize-r.width())/2)-mTextGapStart)*mPercent + mTextGapStart);
-        canvas.drawText(city, start, bottom, mPaint);
+        bottom += (r.height()+(mTextGapBig-mTextGapSmall)*mPercent+mTextGapSmall);
+        canvas.drawText(temp, start, bottom, mPaint);
+
+        mPaint.setTextSize(mTextSizeSmall * mPercent);
+        mPaint.getTextBounds(airquality, 0, airquality.length(), r);
+        start = (int) ((((widthsize - r.width()) / 2) - mTextGapStart) * mPercent + mTextGapStart);
+        bottom += (r.height() + (mTextGapMiddle1 - mTextGapSmall) * mPercent + mTextGapSmall);
+        if (mPercent > mTextDisappearPercentS) {
+            canvas.drawText(airquality, start, bottom, mPaint);
+        } else {
+            if (mPercent > mTextDisappearPercentE) {
+                mPaint.setAlpha((int) (255 * (mPercent - mTextDisappearPercentE) / (mTextDisappearPercentS-mTextDisappearPercentE)));
+                canvas.drawText(airquality, start, bottom, mPaint);
+                mPaint.setAlpha(255);
+            }
+        }
     }
 
-    public void setPercent(float percent) {
+    public void setPercent(float percent, int verticalOffset) {
         mPercent = percent;
+        mVerticalOffset = verticalOffset;
         invalidate();
     }
 

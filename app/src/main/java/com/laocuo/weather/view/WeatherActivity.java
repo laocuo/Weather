@@ -429,7 +429,7 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
         public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
             int totalScrollRange = appBarLayout.getTotalScrollRange();
             float percent = 1 + (float)verticalOffset/(float)totalScrollRange;
-            mHeadInfoView.setPercent(percent);
+            mHeadInfoView.setPercent(percent, verticalOffset);
             mContentInfoView.setPercent(percent);
         }
     }

@@ -3,6 +3,7 @@ package com.laocuo.weather.utils;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Point;
 import android.os.Build;
 import android.util.DisplayMetrics;
@@ -69,5 +70,11 @@ public class DensityUtil {
     public static int sp2px (Context context, float sp) {
         final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
         return (int) (sp * fontScale + 0.5f);
+    }
+
+    public static int getActionBarSize(Context context) {
+        TypedArray actionBarSize = context.obtainStyledAttributes(new int[]{android.R.attr.actionBarSize});
+        float h = actionBarSize.getDimension(0,0.0f);
+        return (int) h;
     }
 }

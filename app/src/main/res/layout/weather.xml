@@ -38,19 +38,17 @@
                     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
             </FrameLayout>
 
-            <com.laocuo.weather.view.customize.WeatherHeadInfoView
-                android:id="@+id/weather_head"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/appbar_head_height"
-                android:layout_gravity="bottom"
-                android:layout_marginBottom="@dimen/appbar_head_margin_bottom"
-                app:layout_collapseMode="none"/>
-
             <com.laocuo.weather.view.customize.WeatherContentInfoView
                 android:id="@+id/weather_content"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/appbar_content_height"
                 android:layout_gravity="bottom"
+                app:layout_collapseMode="none"/>
+
+            <com.laocuo.weather.view.customize.WeatherHeadInfoView
+                android:id="@+id/weather_head"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 app:layout_collapseMode="none"/>
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
