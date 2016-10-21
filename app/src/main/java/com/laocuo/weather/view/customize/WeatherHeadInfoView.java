@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -26,7 +27,7 @@ public class WeatherHeadInfoView extends View {
     private WeatherNowInfo.ResultsBean mWeatherInfo = null;
     private int mTextSizeBig, mTextSizeMiddle, mTextSizeSmall;
     private int mTextGapBig, mTextGapMiddle, mTextGapMiddle1, mTextGapSmall;
-    private int mTextGapStart,mTextGapTop, mTextGapBottom;
+    private int mTextGapStart;
     private int mActionBarHeight;
 
     public WeatherHeadInfoView(Context context, AttributeSet attrs) {
@@ -35,16 +36,20 @@ public class WeatherHeadInfoView extends View {
         mPaint.setStrokeWidth(2.0f);
         mPaint.setAntiAlias(true);
         mPaint.setColor(Color.WHITE);
+        Typeface font = Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL);
+        mPaint.setTypeface(font);
+
         mTextSizeBig = DensityUtil.sp2px(context, 100);
         mTextSizeMiddle = DensityUtil.sp2px(context, 30);
-        mTextGapMiddle1 = DensityUtil.sp2px(context, 40);
         mTextSizeSmall = DensityUtil.sp2px(context, 20);
+
         mTextGapBig = DensityUtil.dip2px(context, 60);
+        mTextGapMiddle1 = DensityUtil.sp2px(context, 40);
         mTextGapMiddle = DensityUtil.dip2px(context, 20);
         mTextGapSmall = DensityUtil.dip2px(context, 4);
+
         mTextGapStart = DensityUtil.dip2px(context, 20);
-        mTextGapBottom = DensityUtil.dip2px(context, 90);
-        mTextGapTop = DensityUtil.dip2px(context, 2);
+
         mActionBarHeight = DensityUtil.getActionBarSize(context);
     }
 
