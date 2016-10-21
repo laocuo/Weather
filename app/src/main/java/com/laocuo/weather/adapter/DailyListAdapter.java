@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.laocuo.weather.R;
+import com.laocuo.weather.WeatherApp;
 import com.laocuo.weather.bean.WeatherDailyInfo;
 import com.laocuo.weather.utils.ImagesUtil;
 
@@ -39,7 +40,7 @@ public class DailyListAdapter extends RecyclerView.Adapter<DailyListAdapter.Dail
         holder.text_night.setText("夜:"+db.getText_night());
         holder.code_day.setImageResource(ImagesUtil.getDrawableByCode(Integer.parseInt(db.getCode_day())));
         holder.code_night.setImageResource(ImagesUtil.getDrawableByCode(Integer.parseInt(db.getCode_night())));
-        holder.temp.setText(db.getHigh()+"℃ / "+db.getLow()+"℃");
+        holder.temp.setText(db.getHigh()+WeatherApp.DEGREE+" / "+db.getLow()+ WeatherApp.DEGREE);
     }
 
     @Override

@@ -28,4 +28,7 @@ public class WeatherApp extends Application {
     public static String getWeatherApiKey() {
         return PRIVATEKEY;
     }
+
+    public static final String DEGREE = "°";
+    public static final String SHESHIDU = "℃";
 }

@@ -35,6 +35,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.laocuo.weather.R;
+import com.laocuo.weather.WeatherApp;
 import com.laocuo.weather.adapter.CardListAdapter;
 import com.laocuo.weather.adapter.DailyListAdapter;
 import com.laocuo.weather.adapter.ZhiShuListAdapter;
@@ -364,7 +365,7 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
             WeatherNowInfo.ResultsBean resultsBean = info.getResults().get(0);
             currentWeather = formatNowInfo(resultsBean).toString();
 //            collapsingToolbar.setTitle(currentWeather);
-            mfeels_like.setText("体感温度:"+resultsBean.getNow().getFeels_like()+"℃");
+            mfeels_like.setText("体感温度:"+resultsBean.getNow().getFeels_like()+ WeatherApp.DEGREE);
             mhumidity.setText("相对湿度:"+resultsBean.getNow().getHumidity()+"%");
             mvisibility.setText("能见度:"+resultsBean.getNow().getVisibility()+"km");
             mpressure.setText("气压:"+resultsBean.getNow().getPressure()+"mb");
@@ -378,7 +379,7 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
     private void saveNowInfo(WeatherNowInfo.ResultsBean resultsBean) {
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(mContext).edit();
         editor.putString(WIDGET_LOCATION, resultsBean.getLocation().getName());
-        editor.putString(WIDGET_TEMPERATURE, resultsBean.getNow().getTemperature()+"℃");
+        editor.putString(WIDGET_TEMPERATURE, resultsBean.getNow().getTemperature()+WeatherApp.SHESHIDU);
         editor.putString(WIDGET_TEXT, resultsBean.getNow().getText());
         editor.putString(WIDGET_CODE, resultsBean.getNow().getCode());
         editor.commit();
@@ -390,7 +391,7 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
         builder.append(resultsBean.getLocation().getName())
                 .append(" ")
                 .append(resultsBean.getNow().getTemperature())
-                .append("℃ ")
+                .append(WeatherApp.DEGREE+" ")
                 .append(resultsBean.getNow().getText());
         return builder.toString();
     }

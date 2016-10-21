@@ -11,6 +11,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.laocuo.weather.R;
+import com.laocuo.weather.WeatherApp;
 import com.laocuo.weather.bean.WeatherDailyInfo;
 import com.laocuo.weather.utils.DensityUtil;
 import com.laocuo.weather.utils.L;
@@ -139,7 +140,7 @@ public class WeatherContentInfoView extends View {
                     mPaint.setAlpha((int) (255 * (mPercent - mTextDisappearPercentE) / (mTextDisappearPercentS - mTextDisappearPercentE)));
                 }
                 //draw string
-                String temp = mTempHighList.get(i) + "℃";
+                String temp = mTempHighList.get(i) + WeatherApp.DEGREE;
                 int start, bottom = p.y - mTextGap - mCircleRadius;
                 Rect r = new Rect();
                 mPaint.getTextBounds(temp, 0, temp.length(), r);

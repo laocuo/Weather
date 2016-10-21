@@ -8,6 +8,7 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.laocuo.weather.WeatherApp;
 import com.laocuo.weather.bean.WeatherNowInfo;
 import com.laocuo.weather.utils.DensityUtil;
 
@@ -62,14 +63,14 @@ public class WeatherHeadInfoView extends View {
     protected void onDraw(Canvas canvas) {
         if (mWeatherInfo == null) {
 //            super.onDraw(canvas);
-            String temp = "21℃";
+            String temp = "21"+WeatherApp.DEGREE;
             String text = "多云";
             String city = "南京";
             String airquality = "55 良";
             drawInfo(canvas, temp, text, city, airquality);
         } else {
 //            float scale = (mPercent*(1 - mMinPercent)) + mMinPercent;
-            String temp = mWeatherInfo.getNow().getTemperature()+"℃";
+            String temp = mWeatherInfo.getNow().getTemperature()+ WeatherApp.DEGREE;
             String text = mWeatherInfo.getNow().getText();
             String city = mWeatherInfo.getLocation().getName();
             String airquality = "55 良";
@@ -88,7 +89,11 @@ public class WeatherHeadInfoView extends View {
         bottom += r.height();
         canvas.drawText(city, start, bottom, mPaint);
 
-        mPaint.setTextSize(mTextSizeSmall * mPercent);
+        if (mPercent > mTextDisappearPercentS) {
+            mPaint.setTextSize(mTextSizeSmall);
+        } else {
+            mPaint.setTextSize(mTextSizeSmall * mPercent/mTextDisappearPercentS);
+        }
         mPaint.getTextBounds(text, 0, text.length(), r);
         start = (int) ((((widthsize - r.width()) / 2) - mTextGapStart) * mPercent + mTextGapStart);
         bottom += (r.height() + (mTextGapMiddle - mTextGapSmall) * mPercent + mTextGapSmall);
@@ -108,7 +113,11 @@ public class WeatherHeadInfoView extends View {
         bottom += (r.height()+(mTextGapBig-mTextGapSmall)*mPercent+mTextGapSmall);
         canvas.drawText(temp, start, bottom, mPaint);
 
-        mPaint.setTextSize(mTextSizeSmall * mPercent);
+        if (mPercent > mTextDisappearPercentS) {
+            mPaint.setTextSize(mTextSizeSmall);
+        } else {
+            mPaint.setTextSize(mTextSizeSmall * mPercent/mTextDisappearPercentS);
+        }
         mPaint.getTextBounds(airquality, 0, airquality.length(), r);
         start = (int) ((((widthsize - r.width()) / 2) - mTextGapStart) * mPercent + mTextGapStart);
         bottom += (r.height() + (mTextGapMiddle1 - mTextGapSmall) * mPercent + mTextGapSmall);
