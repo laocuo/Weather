@@ -34,7 +34,7 @@ public class ImagesUtil {
     }
 
     public static int getRandomNavigationDrawable() {
-        switch (RANDOM.nextInt(5)) {
+        switch (RANDOM.nextInt(3)) {
             default:
             case 0:
                 return R.drawable.cheese_1;
@@ -42,10 +42,6 @@ public class ImagesUtil {
                 return R.drawable.cheese_2;
             case 2:
                 return R.drawable.cheese_3;
-            case 3:
-                return R.drawable.cheese_4;
-            case 4:
-                return R.drawable.cheese_5;
         }
     }
 

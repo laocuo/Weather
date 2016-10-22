@@ -33,6 +33,7 @@ public class WeatherContentInfoView extends View {
     private ArrayList<Integer> mTempHighList = new ArrayList<Integer>();
     private ArrayList<Integer> mTempLowList = new ArrayList<Integer>();
     private ArrayList<String> mTextDayList = new ArrayList<String>();
+    private ArrayList<String> mDateList = new ArrayList<String>();
     private int mTextSize;
     private int mTextGap;
     private int mCircleRadius;
@@ -80,8 +81,13 @@ public class WeatherContentInfoView extends View {
         }
         if (mTextDayList.size() < 1) {
             mTextDayList.add("多云");
+            mTextDayList.add("小雨");
             mTextDayList.add("多云");
-            mTextDayList.add("多云");
+        }
+        if (mDateList.size() < 1) {
+            mDateList.add("今天");
+            mDateList.add("明天");
+            mDateList.add("后天");
         }
     }
 
@@ -91,7 +97,11 @@ public class WeatherContentInfoView extends View {
             setTestData();
             drawInfo(canvas);
         } else {
-//            setTestData();
+            if (mDateList.size() < 1) {
+                mDateList.add("今天");
+                mDateList.add("明天");
+                mDateList.add("后天");
+            }
             drawInfo(canvas);
         }
     }
@@ -140,9 +150,10 @@ public class WeatherContentInfoView extends View {
                     mPaint.setAlpha((int) (255 * (mPercent - mTextDisappearPercentE) / (mTextDisappearPercentS - mTextDisappearPercentE)));
                 }
                 //draw string
-                String temp = mTempHighList.get(i) + WeatherApp.DEGREE;
                 int start, bottom = p.y - mTextGap - mCircleRadius;
                 Rect r = new Rect();
+
+                String temp = mTempHighList.get(i) + WeatherApp.DEGREE;
                 mPaint.getTextBounds(temp, 0, temp.length(), r);
                 start = p.x - r.width() / 2;
                 canvas.drawText(temp, start, bottom, mPaint);
@@ -152,6 +163,12 @@ public class WeatherContentInfoView extends View {
                 mPaint.getTextBounds(text, 0, text.length(), r);
                 start = p.x - r.width() / 2;
                 canvas.drawText(text, start, bottom, mPaint);
+                bottom -= (r.height() + mTextGap);
+
+                String date = mDateList.get(i);
+                mPaint.getTextBounds(date, 0, date.length(), r);
+                start = p.x - r.width() / 2;
+                canvas.drawText(date, start, bottom, mPaint);
 
                 mPaint.setAlpha(255);
             }
@@ -177,6 +194,7 @@ public class WeatherContentInfoView extends View {
             mTempHighList.add(Integer.valueOf(mWeatherInfo.getDaily().get(i).getHigh()));
             mTempLowList.add(Integer.valueOf(mWeatherInfo.getDaily().get(i).getLow()));
             mTextDayList.add(mWeatherInfo.getDaily().get(i).getText_day());
+//            mDateList.add(mWeatherInfo.getDaily().get(i).getDate());
         }
         invalidate();
     }
