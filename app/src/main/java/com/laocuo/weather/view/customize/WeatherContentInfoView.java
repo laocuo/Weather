@@ -49,7 +49,7 @@ public class WeatherContentInfoView extends View {
 //        mPaint.setStrokeWidth(2.0f);
         mTextSize = DensityUtil.sp2px(context, 12);
         mTextGap = DensityUtil.dip2px(context, 6);
-        mCircleRadius = DensityUtil.dip2px(context, 6);
+        mCircleRadius = DensityUtil.dip2px(context, 4);
         mPaint.setTextSize(mTextSize);
     }
 
@@ -98,25 +98,30 @@ public class WeatherContentInfoView extends View {
 
     private void drawInfo(Canvas canvas) {
         mPoints.clear();
-        int alltemp = 0;
+        int alltemp = 0, mintemp = 100;
         for (int i=0;i<mTempHighList.size();i++) {
             alltemp += mTempHighList.get(i);
+            mintemp = Math.min(mintemp, mTempHighList.get(i));
         }
         int averagetemp = alltemp/mTempHighList.size();
         int averagew  = widthsize/(mTempHighList.size()+1);
-        int averageh = heightsize*3/4;
+        int averageh = heightsize*4/5;
+
         if (mPercent > 0) {
             Path path = new Path();
-            path.moveTo(0, averageh + (heightsize - averageh) * (1 - mPercent));
+            int firstPointH;
+            firstPointH = averageh - (averagetemp - mintemp) * scale;
+            firstPointH = (int) (firstPointH + (heightsize + mCircleRadius - firstPointH) * (1 - mPercent));
+            path.moveTo(0, firstPointH);
             for (int i = 0; i < mTempHighList.size() + 1; i++) {
-                int w,h;
+                int w, h;
                 w = averagew * (i + 1);
                 if (i == mTempHighList.size()) {
-                    h = (int) (averageh + (heightsize - averageh) * (1 - mPercent));
+                    h = firstPointH;
                 } else {
-                    h = averageh - (mTempHighList.get(i) - averagetemp) * scale;
-                    h = (int) (h + (heightsize - h) * (1 - mPercent));
-                    mPoints.add(new Point(w,h));
+                    h = averageh - (mTempHighList.get(i) - mintemp) * scale;
+                    h = (int) (h + (heightsize + mCircleRadius - h) * (1 - mPercent));
+                    mPoints.add(new Point(w, h));
                 }
 //                path.quadTo(averagew * (i + 1) - averagew / 2, h, averagew * (i + 1),
 //                        h + (heightsize - h) * (1 - mPercent));
@@ -126,11 +131,6 @@ public class WeatherContentInfoView extends View {
             path.lineTo(0, heightsize);
             path.close();
             canvas.drawPath(path, mPaint);
-        } else {
-            mPoints.clear();
-            for (int i = 0; i < mTempHighList.size(); i++) {
-                mPoints.add(new Point(averagew*(i+1), heightsize));
-            }
         }
 
         for(int i=0;i<mPoints.size();i++) {

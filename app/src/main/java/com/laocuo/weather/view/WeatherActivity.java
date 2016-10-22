@@ -229,6 +229,12 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        if (id == R.id.location) {
+            L.d("location");
+            getLatestWeatherInfo();
+            return true;
+        }
+
         if (id == R.id.shareWeather) {
             L.d("shareWeather");
             if (!TextUtils.isEmpty(currentWeather)) {
@@ -265,6 +271,7 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
 
     private void getLatestWeatherInfo() {
         String city = getCityByLocation();
+        L.d("city="+city);
         callWeatherApi(city);
     }
 

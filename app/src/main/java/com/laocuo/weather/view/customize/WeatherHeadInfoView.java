@@ -39,7 +39,7 @@ public class WeatherHeadInfoView extends View {
         Typeface font = Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL);
         mPaint.setTypeface(font);
 
-        mTextSizeBig = DensityUtil.sp2px(context, 100);
+        mTextSizeBig = DensityUtil.sp2px(context, 120);
         mTextSizeMiddle = DensityUtil.sp2px(context, 30);
         mTextSizeSmall = DensityUtil.sp2px(context, 20);
 
