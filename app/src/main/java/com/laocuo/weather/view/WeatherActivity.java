@@ -333,9 +333,12 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
 //            L.d("getLastKnownLocation");
 //            city = saveCityByLocation(l);
 //        } else {
-        L.d("requestSingleUpdate");
-        mLocationManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, mLocationListener, null);
 //        }
+        L.d("requestSingleUpdate");
+        if (!mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            Snackbar.make(mCoordinatorLayout, R.string.open_location, Snackbar.LENGTH_SHORT).show();
+        }
+        mLocationManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, mLocationListener, null);
         return city;
     }
 
