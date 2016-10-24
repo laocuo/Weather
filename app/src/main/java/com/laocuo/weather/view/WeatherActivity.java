@@ -1,11 +1,10 @@
 package com.laocuo.weather.view;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.location.Address;
+import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
@@ -13,13 +12,13 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -49,6 +48,7 @@ import com.laocuo.weather.presenter.impl.WeatherPresenter;
 import com.laocuo.weather.presenter.model.IWeatherInterface;
 import com.laocuo.weather.utils.ImagesUtil;
 import com.laocuo.weather.utils.L;
+import com.laocuo.weather.utils.LocationUtil;
 import com.laocuo.weather.view.customize.WeatherContentInfoView;
 import com.laocuo.weather.view.customize.WeatherHeadInfoView;
 
@@ -154,6 +154,7 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
     private Context mContext;
 
     private AppBarOffsetListener mAppBarOffsetListener;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -176,8 +177,7 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
 
     private void removeLocationListener() {
         if (mLocationManager != null && mLocationListener != null) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                    ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (!LocationUtil.checkLocationPermission(mContext)) {
                 return;
             }
             L.d("removeUpdates");
@@ -187,7 +187,7 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
 
     private void init() {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_menu);
+//        toolbar.setNavigationIcon(R.drawable.ic_menu);
         setSupportActionBar(toolbar);
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 //        collapsingToolbar.setTitle(getResources().getString(R.string.wait));
@@ -231,7 +231,7 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
         int id = item.getItemId();
         if (id == R.id.location) {
             L.d("location");
-            getLatestWeatherInfo();
+            requestLocation();
             return true;
         }
 
@@ -259,19 +259,22 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
     void refresh() {
         L.d("refresh");
         if (mLocationManager != null) {
-            if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                    ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (!LocationUtil.checkLocationPermission(mContext)) {
                 Snackbar.make(mCoordinatorLayout, R.string.get_location_err, Snackbar.LENGTH_SHORT).show();
                 return;
             }
-            L.d("requestLocationUpdates");
-            mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mLocationListener);
+            L.d("requestSingleUpdate");
+            Criteria ct = new Criteria();
+            ct.setAccuracy(Criteria.ACCURACY_LOW);
+            ct.setPowerRequirement(Criteria.POWER_LOW);
+//            mLocationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0, 0, mLocationListener);
+            mLocationManager.requestSingleUpdate(ct, mLocationListener, null);
         }
     }
 
     private void getLatestWeatherInfo() {
         String city = getCityByLocation();
-        L.d("city="+city);
+        L.d("city=" + city);
         callWeatherApi(city);
     }
 
@@ -284,34 +287,54 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
         }
     }
 
+    @Override
+    public boolean onMenuOpened(int featureId, Menu menu) {
+        return super.onMenuOpened(featureId, menu);
+    }
+
     private String getCityByLocation() {
         L.d("getCityBySharePreferences");
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
-        String city = sp.getString(CITY_KEY, null);
+        String city = sp.getString(CITY_KEY, "nanjing");
         if (TextUtils.isEmpty(city)) {
             L.d("getCityByLocation");
             if (mLocationManager != null) {
-                if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                        ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    Snackbar.make(mCoordinatorLayout, R.string.get_location_permission_err, Snackbar.LENGTH_SHORT).show();
-                    return null;
-                }
-                Location l = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                if (l != null) {
-                    L.d("getLastKnownLocation");
-                    city = saveCityByLocation(l);
-                } else {
-                    L.d("requestLocationUpdates");
-                    mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mLocationListener);
-                }
+                city = requestLocation();
             }
+        }
+        return city;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == LocationUtil.REQUEST_LOCATION) {
+            L.d("grantResults[0]=" + grantResults[0]);
+            L.d("grantResults[1]=" + grantResults[1]);
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    private String requestLocation() {
+        String city = null;
+        if (!LocationUtil.checkLocationPermission(mContext)) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            LocationUtil.requestLocationPermission(this);
+            return null;
+        }
+        Location l = mLocationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+        if (l != null) {
+            L.d("getLastKnownLocation");
+            city = saveCityByLocation(l);
+        } else {
+            L.d("requestSingleUpdate");
+            mLocationManager.requestSingleUpdate(LocationManager.PASSIVE_PROVIDER, mLocationListener, null);
         }
         return city;
     }
@@ -344,6 +367,7 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
 
         @Override
         public void onLocationChanged(Location location) {
+            L.d("onLocationChanged");
             String city = saveCityByLocation(location);
             removeLocationListener();
             callWeatherApi(city);

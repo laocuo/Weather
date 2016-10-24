@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="appbar_height">588dp</dimen>
+    <dimen name="appbar_height">452dp</dimen>
     <dimen name="appbar_min_height">140dp</dimen>
     <dimen name="appbar_content_height">100dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
 
     <dimen name="daily_item_margin">1dp</dimen>
-    <dimen name="daily_item_height">180dp</dimen>
+    <dimen name="daily_item_height">140dp</dimen>
     <dimen name="daily_item_gap">10dp</dimen>
     <dimen name="daily_item_text_size">12sp</dimen>
     <dimen name="daily_item_image_height">60dp</dimen>
