@@ -328,14 +328,14 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
             LocationUtil.requestLocationPermission(this);
             return null;
         }
-        Location l = mLocationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
-        if (l != null) {
-            L.d("getLastKnownLocation");
-            city = saveCityByLocation(l);
-        } else {
-            L.d("requestSingleUpdate");
-            mLocationManager.requestSingleUpdate(LocationManager.PASSIVE_PROVIDER, mLocationListener, null);
-        }
+//        Location l = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+//        if (l != null) {
+//            L.d("getLastKnownLocation");
+//            city = saveCityByLocation(l);
+//        } else {
+        L.d("requestSingleUpdate");
+        mLocationManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, mLocationListener, null);
+//        }
         return city;
     }
 
@@ -380,12 +380,12 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
 
         @Override
         public void onProviderEnabled(String s) {
-
+            L.d("onProviderEnabled");
         }
 
         @Override
         public void onProviderDisabled(String s) {
-
+            L.d("onProviderDisabled");
         }
     }
 
