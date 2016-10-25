@@ -1,5 +1,7 @@
 package com.laocuo.weather.presenter.impl;
 
+import android.text.TextUtils;
+
 import com.laocuo.weather.WeatherApp;
 import com.laocuo.weather.api.ApiManager;
 import com.laocuo.weather.api.WeatherApi;
@@ -10,6 +12,7 @@ import com.laocuo.weather.bean.WeatherLifeInfo;
 import com.laocuo.weather.bean.WeatherNowInfo;
 import com.laocuo.weather.bean.WeatherSunInfo;
 import com.laocuo.weather.presenter.model.IWeatherInterface;
+import com.laocuo.weather.utils.L;
 
 import rx.Observer;
 import rx.Subscription;
@@ -190,5 +193,14 @@ public class WeatherPresenter extends BasePresenter{
 
     public void onExit() {
         unsubcrible();
+    }
+
+    public void updateWeatherInfo(String city) {
+        if (TextUtils.isEmpty(city) == false) {
+            L.d("getWeatherInfo");
+            getNowInfo(city);
+            getDailyInfo(city);
+            getLifeInfo(city);
+        }
     }
 }

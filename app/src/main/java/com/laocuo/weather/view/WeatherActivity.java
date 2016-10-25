@@ -3,12 +3,6 @@ package com.laocuo.weather.view;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.Address;
-import android.location.Criteria;
-import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -44,28 +38,24 @@ import com.laocuo.weather.bean.WeatherHourlyInfo;
 import com.laocuo.weather.bean.WeatherLifeInfo;
 import com.laocuo.weather.bean.WeatherNowInfo;
 import com.laocuo.weather.bean.WeatherSunInfo;
+import com.laocuo.weather.presenter.impl.LocationPresenter;
 import com.laocuo.weather.presenter.impl.WeatherPresenter;
+import com.laocuo.weather.presenter.model.ILocationInterface;
 import com.laocuo.weather.presenter.model.IWeatherInterface;
 import com.laocuo.weather.utils.ImagesUtil;
 import com.laocuo.weather.utils.L;
-import com.laocuo.weather.utils.LocationUtil;
 import com.laocuo.weather.view.customize.WeatherContentInfoView;
 import com.laocuo.weather.view.customize.WeatherHeadInfoView;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
 
 import butterknife.ButterKnife;
 import butterknife.BindView;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 
 /**
  * Created by Administrator on 2016/9/24 0024.
  */
 
-public class WeatherActivity extends AppCompatActivity implements IWeatherInterface {
+public class WeatherActivity extends AppCompatActivity implements IWeatherInterface, ILocationInterface {
     @BindView(R.id.appbar)
     AppBarLayout mAppBarLayout;
 
@@ -122,16 +112,8 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
     private final String WIDGET_CODE = "widget_code";
 
     private WeatherPresenter mWeatherPresenter;
+    private LocationPresenter mLocationPresenter;
     private Gson gson = new Gson();
-
-    private UpdateWeatherThread mUpdateWeatherThread = new UpdateWeatherThread();
-
-    private class UpdateWeatherThread extends Thread {
-        @Override
-        public void run() {
-            getLatestWeatherInfo();
-        }
-    }
 
     private Handler mHandler = new Handler();
     private UpdateWeatherInfo mUpdateWeatherInfo = new UpdateWeatherInfo();
@@ -148,9 +130,6 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
     private CardListAdapter mCardListAdapter;
     private ZhiShuListAdapter mZhiShuListAdapter;
 
-    private LocationManager mLocationManager;
-    private WeatherLocationListener mLocationListener;
-
     private Context mContext;
 
     private AppBarOffsetListener mAppBarOffsetListener;
@@ -162,8 +141,6 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
         setContentView(R.layout.weather);
         ButterKnife.bind(this);
         init();
-        mWeatherPresenter = new WeatherPresenter();
-        mWeatherPresenter.setView(this);
     }
 
     @Override
@@ -171,27 +148,21 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
 //        unbinder.unbind();
         super.onDestroy();
         mAppBarLayout.removeOnOffsetChangedListener(mAppBarOffsetListener);
-        removeLocationListener();
         mWeatherPresenter.onExit();
-    }
-
-    private void removeLocationListener() {
-        if (mLocationManager != null && mLocationListener != null) {
-            if (!LocationUtil.checkLocationPermission(mContext)) {
-                return;
-            }
-            L.d("removeUpdates");
-            mLocationManager.removeUpdates(mLocationListener);
-        }
+        mLocationPresenter.onExit();
     }
 
     private void init() {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        toolbar.setNavigationIcon(R.drawable.ic_menu);
+        toolbar.setNavigationIcon(R.drawable.ic_menu);
         setSupportActionBar(toolbar);
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        collapsingToolbar.setTitle(getResources().getString(R.string.wait));
         Glide.with(this).load(ImagesUtil.getRandomNavigationDrawable()).centerCrop().into(mBackdrop);
+
+        mWeatherPresenter = new WeatherPresenter();
+        mWeatherPresenter.setView(this);
+        mLocationPresenter = new LocationPresenter(this);
+        mLocationPresenter.setView(this);
 
         mDailyListAdapter = new DailyListAdapter(this);
         mDailyList.setLayoutManager(new GridLayoutManager(this, 3));
@@ -207,9 +178,6 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
         mZhiShuList.setLayoutManager(new GridLayoutManager(this, 3));
         mZhiShuList.setItemAnimator(new DefaultItemAnimator());
         mZhiShuList.setAdapter(mZhiShuListAdapter);
-
-        mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        mLocationListener = new WeatherLocationListener();
 
         mAppBarOffsetListener = new AppBarOffsetListener();
         mAppBarLayout.addOnOffsetChangedListener(mAppBarOffsetListener);
@@ -231,7 +199,7 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
         int id = item.getItemId();
         if (id == R.id.location) {
             L.d("location");
-            requestLocation();
+            mLocationPresenter.requestLocation();
             return true;
         }
 
@@ -252,39 +220,18 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
     protected void onStart() {
         super.onStart();
         mHandler.postDelayed(mUpdateWeatherInfo, 300);
-//        mUpdateWeatherThread.start();
     }
 
     @OnClick(R.id.refresh)
     void refresh() {
         L.d("refresh");
-        if (mLocationManager != null) {
-            if (!LocationUtil.checkLocationPermission(mContext)) {
-                Snackbar.make(mCoordinatorLayout, R.string.get_location_err, Snackbar.LENGTH_SHORT).show();
-                return;
-            }
-            L.d("requestSingleUpdate");
-            Criteria ct = new Criteria();
-            ct.setAccuracy(Criteria.ACCURACY_LOW);
-            ct.setPowerRequirement(Criteria.POWER_LOW);
-//            mLocationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0, 0, mLocationListener);
-            mLocationManager.requestSingleUpdate(ct, mLocationListener, null);
-        }
+        getLatestWeatherInfo();
     }
 
     private void getLatestWeatherInfo() {
-        String city = getCityByLocation();
+        String city = mLocationPresenter.getCityByLocation();
         L.d("city=" + city);
-        callWeatherApi(city);
-    }
-
-    private void callWeatherApi(String city) {
-        if (TextUtils.isEmpty(city) == false) {
-            L.d("getWeatherInfo");
-            mWeatherPresenter.getNowInfo(city);
-            mWeatherPresenter.getDailyInfo(city);
-            mWeatherPresenter.getLifeInfo(city);
-        }
+        mWeatherPresenter.updateWeatherInfo(city);
     }
 
     @Override
@@ -292,104 +239,32 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
         return super.onMenuOpened(featureId, menu);
     }
 
-    private String getCityByLocation() {
-        L.d("getCityBySharePreferences");
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
-        String city = sp.getString(CITY_KEY, "nanjing");
-        if (TextUtils.isEmpty(city)) {
-            L.d("getCityByLocation");
-            if (mLocationManager != null) {
-                city = requestLocation();
-            }
-        }
-        return city;
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == LocationUtil.REQUEST_LOCATION) {
-            L.d("grantResults[0]=" + grantResults[0]);
-            L.d("grantResults[1]=" + grantResults[1]);
-        } else {
+        if (!mLocationPresenter.handlePermissionsResult(requestCode, permissions, grantResults)) {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 
-    private String requestLocation() {
-        String city = null;
-        if (!LocationUtil.checkLocationPermission(mContext)) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            LocationUtil.requestLocationPermission(this);
-            return null;
-        }
-//        Location l = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-//        if (l != null) {
-//            L.d("getLastKnownLocation");
-//            city = saveCityByLocation(l);
-//        } else {
-//        }
-        L.d("requestSingleUpdate");
-        if (!mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-            Snackbar.make(mCoordinatorLayout, R.string.open_location, Snackbar.LENGTH_SHORT).show();
-        }
-        mLocationManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, mLocationListener, null);
-        return city;
+    @Override
+    public void getLoacationSuccess(String city) {
+        mWeatherPresenter.updateWeatherInfo(city);
     }
 
-    private String saveCityByLocation(Location l) {
-        String city = null;
-        Double latitude = l.getLatitude();
-        Double longitude = l.getLongitude();
-        Geocoder gc = new Geocoder(mContext, Locale.getDefault());
-        List<Address> addressList = null;
-        try {
-            addressList = gc.getFromLocation(latitude, longitude, 10);
-            Address address = addressList.get(0);
-            L.d("Locality:" + address.getLocality());
-            city = address.getLocality();
-            if (TextUtils.isEmpty(city) == false) {
-                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(mContext).edit();
-                editor.putString(CITY_KEY, city);
-                editor.commit();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            Snackbar.make(mCoordinatorLayout, R.string.get_location_err, Snackbar.LENGTH_SHORT).show();
-        } finally {
-            return city;
-        }
+    @Override
+    public void openLocation() {
+        Snackbar.make(mCoordinatorLayout, R.string.open_location, Snackbar.LENGTH_SHORT).show();
     }
 
-    private class WeatherLocationListener implements LocationListener {
+    @Override
+    public void requestLocationSuccess() {
+        //TODO
 
-        @Override
-        public void onLocationChanged(Location location) {
-            L.d("onLocationChanged");
-            String city = saveCityByLocation(location);
-            removeLocationListener();
-            callWeatherApi(city);
-        }
+    }
 
-        @Override
-        public void onStatusChanged(String s, int i, Bundle bundle) {
-
-        }
-
-        @Override
-        public void onProviderEnabled(String s) {
-            L.d("onProviderEnabled");
-        }
-
-        @Override
-        public void onProviderDisabled(String s) {
-            L.d("onProviderDisabled");
-        }
+    @Override
+    public void getLocationFail() {
+        Snackbar.make(mCoordinatorLayout, R.string.get_location_err, Snackbar.LENGTH_SHORT).show();
     }
 
     private String currentWeather;
