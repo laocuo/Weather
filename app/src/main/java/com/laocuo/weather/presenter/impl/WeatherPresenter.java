@@ -39,17 +39,19 @@ public class WeatherPresenter extends BasePresenter{
                 .subscribe(new Observer<WeatherNowInfo>() {
                     @Override
                     public void onCompleted() {
-
+                        L.d("getNowInfo--onCompleted");
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
+                        L.d("getNowInfo--onError");
                         mView.updateNowInfo(null);
                     }
 
                     @Override
                     public void onNext(WeatherNowInfo weatherinfo) {
+                        L.d("getNowInfo--onNext");
                         mView.updateNowInfo(weatherinfo);
                     }
                 });

@@ -8,10 +8,13 @@ import com.laocuo.weather.utils.NetWorkUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Cache;
+import okhttp3.CacheControl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -22,7 +25,15 @@ public class ApiManager {
     private static final Interceptor REWRITE_CACHE_CONTROL_INTERCEPTOR = new Interceptor() {
         @Override
         public Response intercept(Chain chain) throws IOException {
-            Response originalResponse = chain.proceed(chain.request());
+            Request request = chain.request();
+//            CacheControl.Builder cachebuilder = new CacheControl.Builder();
+//            cachebuilder.maxAge(0, TimeUnit.SECONDS);
+//            cachebuilder.maxStale(365, TimeUnit.DAYS);
+//            CacheControl cacheControl  = cachebuilder.build();
+            if (!NetWorkUtil.isNetWorkAvailable(WeatherApp.getContext())) {
+                request = request.newBuilder().cacheControl(CacheControl.FORCE_CACHE).build();
+            }
+            Response originalResponse = chain.proceed(request);
             if (NetWorkUtil.isNetWorkAvailable(WeatherApp.getContext())) {
                 int maxAge = 60; // 在线缓存在1分钟内可读取
                 return originalResponse.newBuilder()
@@ -31,7 +42,7 @@ public class ApiManager {
                         .header("Cache-Control", "public, max-age=" + maxAge)
                         .build();
             } else {
-                int maxStale = 60 * 60 * 24 * 28; // 离线时缓存保存4周
+                int maxStale = 60 * 60 * 24 * 7; // 离线时缓存保存1周
                 return originalResponse.newBuilder()
                         .removeHeader("Pragma")
                         .removeHeader("Cache-Control")
