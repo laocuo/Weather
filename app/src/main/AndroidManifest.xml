@@ -6,11 +6,12 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
+        android:name=".WeatherApp"
         android:allowBackup="true"
         android:icon="@mipmap/appicon"
         android:label="@string/app_name"
-        android:name=".WeatherApp"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
@@ -20,28 +21,46 @@
             android:theme="@style/FullscreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-
-        <activity android:name=".view.WeatherActivity"
-                  android:theme="@style/APPThemeTransparentActionBar"
-                  android:launchMode="singleTop">
+        <activity
+            android:name=".view.WeatherActivity"
+            android:launchMode="singleTop"
+            android:theme="@style/APPThemeTransparentActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 
-        <receiver android:name=".widget.WeatherWidgetProvider"  android:label="@string/app_name">
+        <activity android:name=".view.CityActivity"
+            android:theme="@style/APPThemeNoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".view.WeatherActivity"/>
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+
+        <receiver
+            android:name=".widget.WeatherWidgetProvider"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
             <intent-filter>
-                <action android:name="android.appwidget.action.WEATHER_UPDATE" />
+                <action android:name="android.appwidget.action.WEATHER_UPDATE"/>
             </intent-filter>
-            <meta-data android:name="android.appwidget.provider"
-                       android:resource="@xml/widget_info" />
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info"/>
         </receiver>
     </application>
 

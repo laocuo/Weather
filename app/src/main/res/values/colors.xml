@@ -7,4 +7,6 @@
     <color name="black_overlay">#66000000</color>
 
     <color name="list_bg">#fcf5f0f0</color>
+
+    <color name="cityhead_background">#eae7e9</color>
 </resources>

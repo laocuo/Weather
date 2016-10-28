@@ -213,6 +213,12 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
             }
             return true;
         }
+
+        if (id == android.R.id.home) {
+            L.d("city select");
+            startActivity(new Intent(WeatherActivity.this, CityActivity.class));
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
