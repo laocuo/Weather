@@ -280,12 +280,18 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
             WeatherNowInfo.ResultsBean resultsBean = info.getResults().get(0);
             currentWeather = formatNowInfo(resultsBean).toString();
 //            collapsingToolbar.setTitle(currentWeather);
-            mfeels_like.setText("体感温度:"+resultsBean.getNow().getFeels_like()+ WeatherApp.DEGREE);
-            mhumidity.setText("相对湿度:"+resultsBean.getNow().getHumidity()+"%");
-            mvisibility.setText("能见度:"+resultsBean.getNow().getVisibility()+"km");
-            mpressure.setText("气压:"+resultsBean.getNow().getPressure()+"mb");
-            mwind_direction.setText("风向:"+resultsBean.getNow().getWind_direction()+"风");
-            mwind_scale.setText("风力:"+resultsBean.getNow().getWind_scale()+"级");
+//            mfeels_like.setText("体感温度:"+resultsBean.getNow().getFeels_like()+ WeatherApp.DEGREE);
+//            mhumidity.setText("相对湿度:"+resultsBean.getNow().getHumidity()+"%");
+//            mvisibility.setText("能见度:"+resultsBean.getNow().getVisibility()+"km");
+//            mpressure.setText("气压:"+resultsBean.getNow().getPressure()+"mb");
+//            mwind_direction.setText("风向:"+resultsBean.getNow().getWind_direction()+"风");
+//            mwind_scale.setText("风力:"+resultsBean.getNow().getWind_scale()+"级");
+            mfeels_like.setText("体感温度:18"+ WeatherApp.DEGREE);
+            mhumidity.setText("相对湿度:55"+"%");
+            mvisibility.setText("能见度:2"+"km");
+            mpressure.setText("气压:1"+"mb");
+            mwind_direction.setText("风向:东北"+"风");
+            mwind_scale.setText("风力:3"+"级");
             mHeadInfoView.setWeatherInfo(resultsBean);
             saveNowInfo(resultsBean);
         }
