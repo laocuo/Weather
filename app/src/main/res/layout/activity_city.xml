@@ -29,6 +29,9 @@
         android:id="@+id/city_navigate"
         android:layout_width="40dp"
         android:layout_height="match_parent"
-        android:background="@color/colorAccent"
-        android:layout_gravity="end"/>
+        android:background="@color/colorPrimary"
+        android:layout_gravity="end"
+        app:textSize="10"
+        app:unselected_color="@android:color/white"
+        app:selected_color="@color/colorAccent"/>
 </android.support.design.widget.CoordinatorLayout>

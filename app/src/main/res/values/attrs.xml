@@ -9,4 +9,9 @@
         <attr name="metaButtonBarButtonStyle" format="reference"/>
     </declare-styleable>
 
+    <declare-styleable name="CityNavigateViewTheme">
+        <attr name="textSize" format="float"/>
+        <attr name="selected_color" format="color"/>
+        <attr name="unselected_color" format="color"/>
+    </declare-styleable>
 </resources>

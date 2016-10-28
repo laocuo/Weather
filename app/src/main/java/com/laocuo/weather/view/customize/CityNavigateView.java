@@ -1,17 +1,19 @@
 package com.laocuo.weather.view.customize;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 
 import com.laocuo.weather.R;
+import com.laocuo.weather.WeatherApp;
+import com.laocuo.weather.utils.L;
 
 import java.util.ArrayList;
 
@@ -20,33 +22,21 @@ import java.util.ArrayList;
  */
 
 public class CityNavigateView extends View {
-    private ArrayList<String> mHeadList = null;
-
-    public void setContent(ArrayList<String> content) {
-        mHeadList = content;
-        invalidate();
-    }
-
     public interface onTouchListener {
         void showTextView(String textView, boolean dismiss);
     }
 
-    private onTouchListener listener;
-
-    public void setListener(onTouchListener listener) {
-        this.listener = listener;
-    }
-
-
     private int mWidth, mHeight, mTextHeight, position;
     private Paint paint;
     private Rect mBound;
-    private int backgroundColor;
+    private int textsize;
     private int selectedColor;
+    private int unselectedColor;
     private int yDown, yMove, mTouchSlop;
     private boolean isSlide;
     private String selectTxt;
-    private Handler handler = new Handler();
+    private ArrayList<String> mHeadList = null;
+    private onTouchListener listener;
 
     public CityNavigateView(Context context) {
         this(context, null);
@@ -58,17 +48,25 @@ public class CityNavigateView extends View {
 
     public CityNavigateView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        initView();
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CityNavigateViewTheme);
+        selectedColor = typedArray.getColor(R.styleable.CityNavigateViewTheme_selected_color, Color.BLACK);
+        unselectedColor = typedArray.getColor(R.styleable.CityNavigateViewTheme_unselected_color, Color.WHITE);
+        float sp = typedArray.getFloat(R.styleable.CityNavigateViewTheme_textSize, 10.0f);
+        textsize = sp2px(context, sp);
+        typedArray.recycle();
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
-    }
-
-
-    private void initView() {
         paint = new Paint();
         paint.setAntiAlias(true);
         mBound = new Rect();
-        backgroundColor = getResources().getColor(R.color.colorPrimary);
-        selectedColor = getResources().getColor(R.color.colorAccent);
+    }
+
+    public void setContent(ArrayList<String> content) {
+        mHeadList = content;
+        invalidate();
+    }
+
+    public void setListener(onTouchListener listener) {
+        this.listener = listener;
     }
 
     @Override
@@ -77,22 +75,19 @@ public class CityNavigateView extends View {
             super.onDraw(canvas);
             return;
         }
-        paint.setColor(backgroundColor);
-        canvas.drawRect(0, 0, (float) mWidth, mHeight, paint);
         for (int i = 0; i < mHeadList.size(); i++) {
-            String textView = mHeadList.get(i);
+            String text = mHeadList.get(i);
             if (i == position - 1) {
                 paint.setColor(selectedColor);
                 selectTxt = mHeadList.get(i);
-                listener.showTextView(selectTxt, false);
+                listener.showTextView(text, false);
             } else {
-                paint.setColor(Color.WHITE);
+                paint.setColor(unselectedColor);
             }
-            paint.setTextSize(40);
-            paint.getTextBounds(textView, 0, textView.length(), mBound);
-            canvas.drawText(textView, (mWidth - mBound.width()) * 1 / 2, mTextHeight - mBound.height(), paint);
+            paint.setTextSize(textsize);
+            paint.getTextBounds(text, 0, text.length(), mBound);
+            canvas.drawText(text, (mWidth - mBound.width()) * 1 / 2, mTextHeight - mBound.height(), paint);
             mTextHeight += mHeight / mHeadList.size();
-
         }
     }
 
@@ -108,7 +103,6 @@ public class CityNavigateView extends View {
             case MotionEvent.ACTION_MOVE:
                 yMove = y;
                 int dy = yMove - yDown;
-                //如果是竖直方向滑动
                 if (Math.abs(dy) > mTouchSlop) {
                     isSlide = true;
                 }
@@ -125,21 +119,18 @@ public class CityNavigateView extends View {
         int y = (int) event.getY();
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-//                backgroundColor = getResources().getColor(R.color.colorAccent);
                 mTextHeight = mHeight / mHeadList.size();
                 position = y / (mHeight / (mHeadList.size() + 1));
                 invalidate();
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (isSlide) {
-//                    backgroundColor = getResources().getColor(R.color.colorAccent);
                     mTextHeight = mHeight / mHeadList.size();
                     position = y / (mHeight / mHeadList.size() + 1) + 1;
                     invalidate();
                 }
                 break;
             case MotionEvent.ACTION_UP:
-//                backgroundColor = getResources().getColor(R.color.colorAccent);
                 mTextHeight = mHeight / mHeadList.size();
                 position = 0;
                 invalidate();
@@ -148,7 +139,6 @@ public class CityNavigateView extends View {
         }
         return true;
     }
-
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -161,17 +151,27 @@ public class CityNavigateView extends View {
         if (widthMode == MeasureSpec.EXACTLY) {
             width = widthSize;
         } else {
-            width = widthSize * 1 / 2;
+            width = dip2px(WeatherApp.getContext(),40);
         }
 
         if (heightMode == MeasureSpec.EXACTLY) {
             height = heightSize;
         } else {
-            height = heightSize * 1 / 2;
+            height = dip2px(WeatherApp.getContext(),200);
         }
         mWidth = width;
         mHeight = height;
         mTextHeight = mHeight / mHeadList.size();
         setMeasuredDimension(width, height);
+    }
+
+    private int dip2px(Context context, float dpValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
+    }
+
+    private int sp2px (Context context, float sp) {
+        final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
+        return (int) (sp * fontScale + 0.5f);
     }
 }

@@ -61,6 +61,7 @@ public class CityActivity extends AppCompatActivity implements CityNavigateView.
         setContentView(R.layout.activity_city);
         mContext = this;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.city_select);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mCities.clear();
@@ -123,7 +124,6 @@ public class CityActivity extends AppCompatActivity implements CityNavigateView.
                 break;
             }
         }
-//        recyclerView.scrollToPosition(selectPosition);
         scroll2Position(selectPosition);
     }
 
@@ -141,9 +141,6 @@ public class CityActivity extends AppCompatActivity implements CityNavigateView.
     }
 
     private class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.CityViewHolder> {
-        public static final int FIRST_STICKY_VIEW = 1;
-        public static final int HAS_STICKY_VIEW = 2;
-        public static final int NONE_STICKY_VIEW = 3;
         private ArrayList<City> cities;
         public CityListAdapter(ArrayList<City> cities) {
             this.cities = cities;
