@@ -105,6 +105,7 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
     WeatherContentInfoView mContentInfoView;
 
     private final String CITY_KEY = "pref_city";
+    private final int REQUEST_CITY = 1;
 
     private final String WIDGET_LOCATION = "widget_location";
     private final String WIDGET_TEMPERATURE = "widget_temperature";
@@ -216,10 +217,27 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
 
         if (id == android.R.id.home) {
             L.d("city select");
-            startActivity(new Intent(WeatherActivity.this, CityActivity.class));
+            startActivityForResult(new Intent(WeatherActivity.this, CityActivity.class), REQUEST_CITY);
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CITY:
+                if (resultCode == RESULT_OK) {
+                    String city = data.getStringExtra(CITY_KEY);
+                    if (!TextUtils.isEmpty(city)) {
+                        mLocationPresenter.updateCity(city);
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

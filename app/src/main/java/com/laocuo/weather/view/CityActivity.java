@@ -1,5 +1,6 @@
 package com.laocuo.weather.view;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.Context;
@@ -14,7 +15,10 @@ import android.widget.TextView;
 
 import com.github.promeg.pinyinhelper.Pinyin;
 import com.laocuo.weather.R;
+import com.laocuo.weather.utils.L;
 import com.laocuo.weather.view.customize.CityNavigateView;
+import com.laocuo.weather.view.recycleview.DividerItemDecoration;
+import com.laocuo.weather.view.recycleview.OnRecyclerItemClickListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,6 +27,8 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class CityActivity extends AppCompatActivity implements CityNavigateView.onTouchListener {
+    private final String CITY_KEY = "pref_city";
+
     private RecyclerView mCityList;
     private CityListAdapter mCityListAdapter;
     private Context mContext;
@@ -92,6 +98,7 @@ public class CityActivity extends AppCompatActivity implements CityNavigateView.
         layoutManager = new LinearLayoutManager(this);
         mCityList.setLayoutManager(layoutManager);
         mCityList.setItemAnimator(new DefaultItemAnimator());
+        mCityList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
         mCityList.setAdapter(mCityListAdapter);
         mCityList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -103,6 +110,20 @@ public class CityActivity extends AppCompatActivity implements CityNavigateView.
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
 
+            }
+        });
+        mCityList.addOnItemTouchListener(new OnRecyclerItemClickListener(mCityList) {
+            @Override
+            public void onItemClick(RecyclerView.ViewHolder vh) {
+                if (vh instanceof CityListAdapter.CityViewHolder) {
+                    CityListAdapter.CityViewHolder v = (CityListAdapter.CityViewHolder) vh;
+                    String city = v.name.getText().toString();
+                    L.d("city=" + city);
+                    Intent i = CityActivity.this.getIntent();
+                    i.putExtra(CITY_KEY, city);
+                    CityActivity.this.setResult(RESULT_OK, i);
+                    finish();
+                }
             }
         });
     }

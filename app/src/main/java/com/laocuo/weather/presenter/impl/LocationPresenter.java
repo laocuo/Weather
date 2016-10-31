@@ -56,6 +56,18 @@ public class LocationPresenter {
         return city;
     }
 
+    public void updateCity(String city) {
+        L.d("updateCity:"+city);
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
+        String prev_city = sp.getString(CITY_KEY, "nanjing");
+        if (!prev_city.equalsIgnoreCase(city)) {
+            SharedPreferences.Editor editor = sp.edit();
+            editor.putString(CITY_KEY, city);
+            editor.commit();
+            mView.getLoacationSuccess(city);
+        }
+    }
+
     public String requestLocation() {
         String city = null;
         if (!checkLocationPermission(mContext)) {
