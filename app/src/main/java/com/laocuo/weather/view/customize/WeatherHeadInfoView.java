@@ -67,12 +67,11 @@ public class WeatherHeadInfoView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         if (mWeatherInfo == null) {
-//            super.onDraw(canvas);
-            String temp = "21"+WeatherApp.DEGREE;
-            String text = "多云";
-            String city = "南京";
-            String airquality = "55 良";
-            drawInfo(canvas, temp, text, city, airquality);
+//            String temp = "21"+WeatherApp.DEGREE;
+//            String text = "多云";
+//            String city = "南京";
+//            String airquality = "55 良";
+//            drawInfo(canvas, temp, text, city, airquality);
         } else {
 //            float scale = (mPercent*(1 - mMinPercent)) + mMinPercent;
             String temp = mWeatherInfo.getNow().getTemperature()+ WeatherApp.DEGREE;

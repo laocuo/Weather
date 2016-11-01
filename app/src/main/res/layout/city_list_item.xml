@@ -10,8 +10,7 @@
         android:paddingStart="15dp"
         android:background="@color/cityhead_background"
         android:textSize="16sp"
-        android:visibility="gone"
-        android:text="A"/>
+        android:visibility="gone"/>
     <TextView
         android:id="@+id/city_name"
         android:layout_width="match_parent"
@@ -19,5 +18,5 @@
         android:gravity="center_vertical"
         android:paddingStart="30dp"
         android:textSize="18sp"
-        android:text="ANQING"/>
+        android:background="@drawable/city_item_bg"/>
 </LinearLayout>

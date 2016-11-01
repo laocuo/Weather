@@ -1,5 +1,6 @@
 package com.laocuo.weather.view.recycleview;
 
+import android.graphics.Color;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.GestureDetector;
@@ -40,12 +41,12 @@ public abstract class OnRecyclerItemClickListener implements RecyclerView.OnItem
             View child = recyclerView.findChildViewUnder(e.getX(), e.getY());
             if (child != null) {
                 RecyclerView.ViewHolder vh = recyclerView.getChildViewHolder(child);
+//                vh.itemView.setBackgroundColor(Color.WHITE);
                 onItemClick(vh);
             }
             return true;
         }
 
-        //长点击事件，本例不需要不处理
         //@Override
         //public void onLongPress(MotionEvent e) {
         //    View child = recyclerView.findChildViewUnder(e.getX(), e.getY());

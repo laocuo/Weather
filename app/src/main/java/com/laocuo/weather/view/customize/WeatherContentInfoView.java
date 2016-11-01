@@ -94,8 +94,8 @@ public class WeatherContentInfoView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         if (mWeatherInfo == null) {
-            setTestData();
-            drawInfo(canvas);
+//            setTestData();
+//            drawInfo(canvas);
         } else {
             if (mDateList.size() < 1) {
                 mDateList.add("今天");

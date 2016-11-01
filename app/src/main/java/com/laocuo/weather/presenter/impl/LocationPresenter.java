@@ -64,7 +64,6 @@ public class LocationPresenter {
             SharedPreferences.Editor editor = sp.edit();
             editor.putString(CITY_KEY, city);
             editor.commit();
-            mView.getLoacationSuccess(city);
         }
     }
 

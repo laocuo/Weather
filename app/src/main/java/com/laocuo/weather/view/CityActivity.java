@@ -1,6 +1,7 @@
 package com.laocuo.weather.view;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.Context;
@@ -9,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -26,7 +28,7 @@ import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public class CityActivity extends AppCompatActivity implements CityNavigateView.onTouchListener {
+public class CityActivity extends AppCompatActivity implements CityNavigateView.onTouchListener{
     private final String CITY_KEY = "pref_city";
 
     private RecyclerView mCityList;
@@ -100,32 +102,34 @@ public class CityActivity extends AppCompatActivity implements CityNavigateView.
         mCityList.setItemAnimator(new DefaultItemAnimator());
         mCityList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
         mCityList.setAdapter(mCityListAdapter);
-        mCityList.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
+        mCityListAdapter.setOnClickListener(new OnClickListener() {
 
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
+            public void onClick(View view, int position) {
+                TextView name = (TextView) view.findViewById(R.id.city_name);
+                String city = name.getText().toString();
+                L.d("select city=" + city);
+                Intent i = CityActivity.this.getIntent();
+                i.putExtra(CITY_KEY, city);
+                CityActivity.this.setResult(RESULT_OK, i);
+                finish();
+            }
+        });
 
-            }
-        });
-        mCityList.addOnItemTouchListener(new OnRecyclerItemClickListener(mCityList) {
-            @Override
-            public void onItemClick(RecyclerView.ViewHolder vh) {
-                if (vh instanceof CityListAdapter.CityViewHolder) {
-                    CityListAdapter.CityViewHolder v = (CityListAdapter.CityViewHolder) vh;
-                    String city = v.name.getText().toString();
-                    L.d("city=" + city);
-                    Intent i = CityActivity.this.getIntent();
-                    i.putExtra(CITY_KEY, city);
-                    CityActivity.this.setResult(RESULT_OK, i);
-                    finish();
-                }
-            }
-        });
+//        mCityList.addOnItemTouchListener(new OnRecyclerItemClickListener(mCityList) {
+//            @Override
+//            public void onItemClick(RecyclerView.ViewHolder vh) {
+//                if (vh instanceof CityListAdapter.CityViewHolder) {
+//                    CityListAdapter.CityViewHolder v = (CityListAdapter.CityViewHolder) vh;
+//                    String city = v.name.getText().toString();
+//                    L.d("select city=" + city);
+//                    Intent i = CityActivity.this.getIntent();
+//                    i.putExtra(CITY_KEY, city);
+//                    CityActivity.this.setResult(RESULT_OK, i);
+////                    finish();
+//                }
+//            }
+//        });
     }
 
     public String transformPinYin(String character) {
@@ -161,10 +165,20 @@ public class CityActivity extends AppCompatActivity implements CityNavigateView.
         }
     }
 
+    private interface OnClickListener {
+        void onClick(View view, int position);
+    }
+
     private class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.CityViewHolder> {
         private ArrayList<City> cities;
+        private OnClickListener mClickListener = null;
+
         public CityListAdapter(ArrayList<City> cities) {
             this.cities = cities;
+        }
+
+        public void setOnClickListener(OnClickListener listener) {
+            mClickListener = listener;
         }
 
         @Override
@@ -175,8 +189,16 @@ public class CityActivity extends AppCompatActivity implements CityNavigateView.
         }
 
         @Override
-        public void onBindViewHolder(CityViewHolder holder, int position) {
+        public void onBindViewHolder(final CityViewHolder holder, int position) {
             holder.name.setText(cities.get(position).name);
+            if (mClickListener != null) {
+                holder.name.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mClickListener.onClick(holder.itemView, holder.getLayoutPosition());
+                    }
+                });
+            }
             String head = cities.get(position).pinyin.substring(0, 1);
             String prev_head = null;
             if (position > 0) {
