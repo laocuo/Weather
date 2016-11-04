@@ -48,7 +48,7 @@ public class WeatherContentInfoView extends View {
         mPaint.setAntiAlias(true);
         mPaint.setColor(Color.WHITE);
 //        mPaint.setStrokeWidth(2.0f);
-        mTextSize = DensityUtil.sp2px(context, 12);
+        mTextSize = DensityUtil.sp2px(context, 10);
         mTextGap = DensityUtil.dip2px(context, 6);
         mCircleRadius = DensityUtil.dip2px(context, 4);
         mPaint.setTextSize(mTextSize);
@@ -97,6 +97,7 @@ public class WeatherContentInfoView extends View {
 //            setTestData();
 //            drawInfo(canvas);
         } else {
+//            setTestData();
             if (mDateList.size() < 1) {
                 mDateList.add("今天");
                 mDateList.add("明天");
@@ -119,10 +120,12 @@ public class WeatherContentInfoView extends View {
 
         if (mPercent > 0) {
             Path path = new Path();
+            Point prevPoint = new Point();
             int firstPointH;
             firstPointH = averageh - (averagetemp - mintemp) * scale;
             firstPointH = (int) (firstPointH + (heightsize + mCircleRadius - firstPointH) * (1 - mPercent));
             path.moveTo(0, firstPointH);
+            prevPoint.set(0, firstPointH);
             for (int i = 0; i < mTempHighList.size() + 1; i++) {
                 int w, h;
                 w = averagew * (i + 1);
@@ -133,9 +136,8 @@ public class WeatherContentInfoView extends View {
                     h = (int) (h + (heightsize + mCircleRadius - h) * (1 - mPercent));
                     mPoints.add(new Point(w, h));
                 }
-//                path.quadTo(averagew * (i + 1) - averagew / 2, h, averagew * (i + 1),
-//                        h + (heightsize - h) * (1 - mPercent));
-                path.lineTo(w, h);
+                path.cubicTo(prevPoint.x + averagew/3, prevPoint.y, w - averagew/3, h, w, h);
+                prevPoint.set(w, h);
             }
             path.lineTo(widthsize, heightsize);
             path.lineTo(0, heightsize);
