@@ -24,13 +24,15 @@
         android:id="@+id/city_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/city_navigate_width"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
     <com.laocuo.weather.view.customize.CityNavigateView
         android:id="@+id/city_navigate"
-        android:layout_width="40dp"
+        android:layout_width="@dimen/city_navigate_width"
         android:layout_height="match_parent"
         android:background="@color/colorPrimary"
         android:layout_gravity="end"
+        android:paddingTop="@dimen/city_list_padding"
         app:textSize="10"
         app:unselected_color="@android:color/white"
         app:selected_color="@color/colorAccent"/>
