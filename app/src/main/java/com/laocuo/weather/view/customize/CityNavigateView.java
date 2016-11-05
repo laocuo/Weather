@@ -70,7 +70,6 @@ public class CityNavigateView extends View {
         paint.setAntiAlias(true);
         paint.setTextSize(textsize);
         mBound = new Rect();
-        paint.getTextBounds("A", 0, "A".length(), mBound);
     }
 
     public void setContent(ArrayList<String> content) {
@@ -88,10 +87,13 @@ public class CityNavigateView extends View {
             super.onDraw(canvas);
             return;
         }
-        int x = (mWidth - mBound.width()) / 2;
-        int y = mPaddingTop + (mTextHeight  - mBound.height()) / 2;
+        int x = 0;
+        int y = 0;
         for (int i = 0; i < mHeadList.size(); i++) {
             String text = mHeadList.get(i);
+            paint.getTextBounds(text, 0, text.length(), mBound);
+            x = (mWidth - mBound.width()) / 2;
+            y = mPaddingTop + i*mTextHeight + mTextHeight - (mTextHeight  - mBound.height()) / 2;
             if (i == position - 1) {
                 selectTxt = mHeadList.get(i);
                 paint.setColor(selectedColor);
@@ -100,7 +102,6 @@ public class CityNavigateView extends View {
                 paint.setColor(unselectedColor);
             }
             canvas.drawText(text, x, y, paint);
-            y += mTextHeight;
         }
     }
 

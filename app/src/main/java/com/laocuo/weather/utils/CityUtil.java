@@ -25,7 +25,7 @@ import java.util.ArrayList;
 
 public class CityUtil {
     public static String[] stringCitys = new String[]{
-            "﻿阿里","日喀则","喀什","阿图什","和田","阿拉尔","阿克苏","伊宁","博乐","库尔勒","石河子",
+            "阿里","日喀则","喀什","阿图什","和田","阿拉尔","阿克苏","伊宁","博乐","库尔勒","石河子",
             "吐鲁番","乌鲁木齐","昌吉","五家渠","塔城","克拉玛依","阿勒泰","景洪","西沙","三亚","乐东",
             "五指山","东方","昌江","白沙","儋州","保亭","陵水","万宁","琼中","屯昌","琼海","文昌","临高",
             "崇左","防城港","北海","钦州","澄迈","定安","海口","湛江","茂名","阳江","南沙","中沙","珠海",
@@ -55,18 +55,27 @@ public class CityUtil {
             "长春","吉林","延吉","牡丹江","乌兰浩特","白城","海拉尔","松原","哈尔滨","大庆","齐齐哈尔",
             "绥化","伊春","大兴安岭","黑河","鸡西","七台河","佳木斯","鹤岗","双鸭山"
     };
-    public static String[] getCityList() {
-        return stringCitys;
+    public static ArrayList<String> getCityList() {
+        if (stringCitysFromAssets.size() > 0) {
+            return stringCitysFromAssets;
+        }
+        for (int i=0;i<stringCitys.length;i++) {
+            stringCitysFromAssets.add(stringCitys[i]);
+        }
+        return stringCitysFromAssets;
     }
 
     public static ArrayList<String> stringCitysFromAssets = new ArrayList<String>();
     public static ArrayList<String> getCityListFromAssets(Context context) {
-        stringCitysFromAssets.clear();
+        if (stringCitysFromAssets.size() > 0) {
+            return stringCitysFromAssets;
+        }
         InputStreamReader inputReader = null;
         try {
             inputReader = new InputStreamReader(context.getResources().getAssets().open("city-utf8.txt") );
             BufferedReader bufReader = new BufferedReader(inputReader);
-            String line="";
+            String line = null;
+            //always get .阿里 for first line,unbelievable
             while((line = bufReader.readLine()) != null) {
                 stringCitysFromAssets.add(line);
             }

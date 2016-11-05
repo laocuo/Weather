@@ -67,8 +67,10 @@ public class CityActivity extends AppCompatActivity implements CityNavigateView.
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mCities.clear();
-        ArrayList<String> cityNameList = CityUtil.getCityListFromAssets(mContext);
-        for(String city : cityNameList) {
+        mCityHeadsSet.clear();
+        mCityHeads.clear();
+        ArrayList<String> cityNameList = CityUtil.getCityList();
+        for (String city : cityNameList) {
             City c = new City();
             c.setName(city);
             c.setPinyin(transformPinYin(c.name));

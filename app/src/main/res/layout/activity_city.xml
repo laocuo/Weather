@@ -32,7 +32,6 @@
         android:layout_height="match_parent"
         android:background="@color/colorPrimary"
         android:layout_gravity="end"
-        android:paddingTop="@dimen/city_list_padding"
         app:textSize="10"
         app:unselected_color="@android:color/white"
         app:selected_color="@color/colorAccent"/>
