@@ -46,7 +46,7 @@ public class LocationPresenter {
     public String getCityByLocation() {
         L.d("getCityBySharePreferences");
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
-        String city = sp.getString(CITY_KEY, "nanjing");
+        String city = sp.getString(CITY_KEY, "淮安");
         if (TextUtils.isEmpty(city)) {
             L.d("getCityByLocation");
             if (mLocationManager != null) {
