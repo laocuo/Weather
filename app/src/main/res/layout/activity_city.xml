@@ -35,4 +35,14 @@
         app:textSize="10"
         app:unselected_color="@android:color/white"
         app:selected_color="@color/colorAccent"/>
+
+    <TextView
+        android:id="@+id/chief"
+        android:layout_width="@dimen/city_chief_size"
+        android:layout_height="@dimen/city_chief_size"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textSize="@dimen/city_chief_font_size"
+        android:background="@drawable/city_chief_bg"
+        android:visibility="invisible"/>
 </android.support.design.widget.CoordinatorLayout>

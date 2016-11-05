@@ -13,6 +13,7 @@ import android.view.ViewConfiguration;
 
 import com.laocuo.weather.R;
 import com.laocuo.weather.WeatherApp;
+import com.laocuo.weather.utils.L;
 
 import java.util.ArrayList;
 
@@ -34,7 +35,7 @@ import java.util.ArrayList;
 
 public class CityNavigateView extends View {
     public interface onTouchListener {
-        void showTextView(String textView, boolean dismiss);
+        void showChiefView(String text, boolean show);
     }
 
     private int mWidth, mHeight, mTextHeight, position, mPaddingTop;
@@ -45,7 +46,6 @@ public class CityNavigateView extends View {
     private int unselectedColor;
     private int yDown, yMove, mTouchSlop;
     private boolean isSlide;
-    private String selectTxt;
     private ArrayList<String> mHeadList = null;
     private onTouchListener listener;
 
@@ -69,6 +69,7 @@ public class CityNavigateView extends View {
         paint = new Paint();
         paint.setAntiAlias(true);
         paint.setTextSize(textsize);
+        paint.setColor(unselectedColor);
         mBound = new Rect();
     }
 
@@ -94,13 +95,11 @@ public class CityNavigateView extends View {
             paint.getTextBounds(text, 0, text.length(), mBound);
             x = (mWidth - mBound.width()) / 2;
             y = mPaddingTop + i*mTextHeight + mTextHeight - (mTextHeight  - mBound.height()) / 2;
-            if (i == position - 1) {
-                selectTxt = mHeadList.get(i);
-                paint.setColor(selectedColor);
-                listener.showTextView(text, false);
-            } else {
-                paint.setColor(unselectedColor);
-            }
+//            if (i == position - 1) {
+//                paint.setColor(selectedColor);
+//            } else {
+//                paint.setColor(unselectedColor);
+//            }
             canvas.drawText(text, x, y, paint);
         }
     }
@@ -133,28 +132,32 @@ public class CityNavigateView extends View {
         int y = (int) event.getY();
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                if (y > mPaddingTop) {
-                    position = (y - mPaddingTop) / ((mHeight - mPaddingTop) / (mHeadList.size() + 1));
-                    invalidate();
-                }
+                handleTouchChief(y);
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (isSlide) {
-                    if (y > mPaddingTop) {
-                        position = (y - mPaddingTop) / ((mHeight - mPaddingTop) / mHeadList.size() + 1) + 1;
-                        invalidate();
-                    }
+                    handleTouchChief(y);
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                position = 0;
-                invalidate();
-                listener.showTextView(selectTxt, true);
+                listener.showChiefView(null, false);
                 break;
         }
         return true;
     }
 
+    private void handleTouchChief(int y) {
+        if (y > mPaddingTop) {
+            int z = y - mPaddingTop;
+            int a = (mHeight - mPaddingTop) / mHeadList.size();
+            position = z/a;
+            L.d("z="+z+" a="+a+" p="+position);
+            if (position >= mHeadList.size()) {
+                position = mHeadList.size() - 1;
+            }
+            listener.showChiefView(mHeadList.get(position), true);
+        }
+    }
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
@@ -177,7 +180,9 @@ public class CityNavigateView extends View {
         mWidth = width;
         mHeight = height;
         mPaddingTop = getPaddingTop();
-        mTextHeight = (mHeight - mPaddingTop) / mHeadList.size();
+        if (mHeadList != null) {
+            mTextHeight = (mHeight - mPaddingTop) / mHeadList.size();
+        }
         setMeasuredDimension(width, height);
     }
 

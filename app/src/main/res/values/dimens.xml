@@ -39,4 +39,6 @@
 
     <dimen name="city_list_padding">24dp</dimen>
     <dimen name="city_navigate_width">40dp</dimen>
+    <dimen name="city_chief_size">60dp</dimen>
+    <dimen name="city_chief_font_size">40sp</dimen>
 </resources>

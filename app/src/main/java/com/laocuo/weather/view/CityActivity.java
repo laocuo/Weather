@@ -1,7 +1,6 @@
 package com.laocuo.weather.view;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.Context;
@@ -10,7 +9,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -49,6 +47,7 @@ public class CityActivity extends AppCompatActivity implements CityNavigateView.
     private final String CITY_KEY = "pref_city";
 
     private RecyclerView mCityList;
+    private TextView mChiefView;
     private CityListAdapter mCityListAdapter;
     private Context mContext;
     private ArrayList<String> mCityHeads = new ArrayList<String>();
@@ -88,6 +87,8 @@ public class CityActivity extends AppCompatActivity implements CityNavigateView.
         for (String s : mCityHeadsSet) {
             mCityHeads.add(s);
         }
+        mChiefView = (TextView) findViewById(R.id.chief);
+
         mNavigateView = (CityNavigateView) findViewById(R.id.city_navigate);
         mNavigateView.setContent(mCityHeads);
         mNavigateView.setListener(this);
@@ -138,15 +139,21 @@ public class CityActivity extends AppCompatActivity implements CityNavigateView.
     }
 
     @Override
-    public void showTextView(String textView, boolean dismiss) {
-        int selectPosition = 0;
-        for (int i = 0; i < mCities.size(); i++) {
-            if (mCities.get(i).getFirstPinYin().equals(textView)) {
-                selectPosition = i;
-                break;
+    public void showChiefView(String text, boolean show) {
+        if (show) {
+            mChiefView.setText(text);
+            mChiefView.setVisibility(View.VISIBLE);
+            int selectPosition = 0;
+            for (int i = 0; i < mCities.size(); i++) {
+                if (mCities.get(i).getFirstPinYin().equals(text)) {
+                    selectPosition = i;
+                    break;
+                }
             }
+            scroll2Position(selectPosition);
+        } else {
+            mChiefView.setVisibility(View.INVISIBLE);
         }
-        scroll2Position(selectPosition);
     }
 
     private void scroll2Position(int index) {
