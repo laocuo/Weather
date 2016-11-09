@@ -151,7 +151,6 @@ public class CityNavigateView extends View {
             int z = y - mPaddingTop;
             int a = (mHeight - mPaddingTop) / mHeadList.size();
             position = z/a;
-            L.d("z="+z+" a="+a+" p="+position);
             if (position >= mHeadList.size()) {
                 position = mHeadList.size() - 1;
             }

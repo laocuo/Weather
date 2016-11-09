@@ -7,9 +7,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.widget.RemoteViews;
 
+import com.google.gson.Gson;
 import com.laocuo.weather.R;
+import com.laocuo.weather.WeatherApp;
+import com.laocuo.weather.bean.WeatherNowInfo;
 import com.laocuo.weather.utils.ImagesUtil;
 import com.laocuo.weather.view.WeatherActivity;
 
@@ -30,6 +34,8 @@ import com.laocuo.weather.view.WeatherActivity;
  */
 
 public class WeatherWidgetProvider extends AppWidgetProvider {
+    private Gson gson = new Gson();
+
     public WeatherWidgetProvider() {
         super();
     }
@@ -58,11 +64,18 @@ public class WeatherWidgetProvider extends AppWidgetProvider {
         remoteViews.setOnClickPendingIntent(R.id.widget, clickIntent);
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        remoteViews.setTextViewText(R.id.widget_city, sp.getString("widget_location", "南京"));
-        remoteViews.setTextViewText(R.id.widget_temperature, sp.getString("widget_temperature", "25℃"));
-        remoteViews.setTextViewText(R.id.widget_text, sp.getString("widget_text", "多云"));
-        String code = sp.getString("widget_code", "0");
-        remoteViews.setImageViewResource(R.id.widget_image, ImagesUtil.getDrawableByCode(Integer.valueOf(code)));
+        String nowinfo  = sp.getString("now_info", "");
+        if (!TextUtils.isEmpty(nowinfo)) {
+            WeatherNowInfo info = gson.fromJson(nowinfo, WeatherNowInfo.class);
+            if (info != null) {
+                WeatherNowInfo.ResultsBean resultsBean = info.getResults().get(0);
+                remoteViews.setTextViewText(R.id.widget_city, resultsBean.getLocation().getName());
+                remoteViews.setTextViewText(R.id.widget_temperature, resultsBean.getNow().getTemperature()+ WeatherApp.SHESHIDU);
+                remoteViews.setTextViewText(R.id.widget_text, resultsBean.getNow().getText());
+                String code = resultsBean.getNow().getCode();
+                remoteViews.setImageViewResource(R.id.widget_image, ImagesUtil.getDrawableByCode(Integer.valueOf(code)));
+            }
+        }
 
         AppWidgetManager.getInstance(context).updateAppWidget(appWidgetId, remoteViews);
     }

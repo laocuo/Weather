@@ -119,10 +119,8 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
     private final String CITY_KEY = "pref_city";
     private final int REQUEST_CITY = 1;
 
-    private final String WIDGET_LOCATION = "widget_location";
-    private final String WIDGET_TEMPERATURE = "widget_temperature";
-    private final String WIDGET_TEXT = "widget_text";
-    private final String WIDGET_CODE = "widget_code";
+    private final String NOW_INFO = "now_info";
+    private final String DAILY_INFO = "daily_info";
 
     private WeatherPresenter mWeatherPresenter;
     private LocationPresenter mLocationPresenter;
@@ -256,7 +254,35 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
     @Override
     protected void onStart() {
         super.onStart();
+        updateWeatherInfoFromCache();
         mHandler.postDelayed(mUpdateWeatherInfo, 300);
+    }
+
+    private void updateWeatherInfoFromCache() {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
+        String nowinfo  = sp.getString(NOW_INFO, "");
+        if (!TextUtils.isEmpty(nowinfo)) {
+            WeatherNowInfo info = gson.fromJson(nowinfo, WeatherNowInfo.class);
+            if (info != null) {
+                WeatherNowInfo.ResultsBean resultsBean = info.getResults().get(0);
+                currentWeather = formatNowInfo(resultsBean).toString();
+                mfeels_like.setText("体感温度:18");
+                mhumidity.setText("相对湿度:55" + "%");
+                mvisibility.setText("能见度:2" + "km");
+                mpressure.setText("气压:1" + "mb");
+                mwind_direction.setText("风向:东北" + "风");
+                mwind_scale.setText("风力:3" + "级");
+                mHeadInfoView.setWeatherInfo(resultsBean);
+            }
+        }
+        String dailyinfo  = sp.getString(DAILY_INFO, "");
+        if (!TextUtils.isEmpty(dailyinfo)) {
+            WeatherDailyInfo info = gson.fromJson(dailyinfo, WeatherDailyInfo.class);
+            if (info != null) {
+                mDailyListAdapter.setDailyInfo(info.getResults().get(0));
+                mContentInfoView.setWeatherInfo(info.getResults().get(0));
+            }
+        }
     }
 
     @OnClick(R.id.refresh)
@@ -317,25 +343,18 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
 //            mpressure.setText("气压:"+resultsBean.getNow().getPressure()+"mb");
 //            mwind_direction.setText("风向:"+resultsBean.getNow().getWind_direction()+"风");
 //            mwind_scale.setText("风力:"+resultsBean.getNow().getWind_scale()+"级");
-            mfeels_like.setText("体感温度:18"+ WeatherApp.DEGREE);
+            mfeels_like.setText("体感温度:18");
             mhumidity.setText("相对湿度:55"+"%");
             mvisibility.setText("能见度:2"+"km");
             mpressure.setText("气压:1"+"mb");
             mwind_direction.setText("风向:东北"+"风");
             mwind_scale.setText("风力:3"+"级");
             mHeadInfoView.setWeatherInfo(resultsBean);
-            saveNowInfo(resultsBean);
+            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(mContext).edit();
+            editor.putString(NOW_INFO, gson.toJson(info));
+            editor.commit();
+            sendBroadcast(new Intent("android.appwidget.action.WEATHER_UPDATE"));
         }
-    }
-
-    private void saveNowInfo(WeatherNowInfo.ResultsBean resultsBean) {
-        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(mContext).edit();
-        editor.putString(WIDGET_LOCATION, resultsBean.getLocation().getName());
-        editor.putString(WIDGET_TEMPERATURE, resultsBean.getNow().getTemperature()+WeatherApp.SHESHIDU);
-        editor.putString(WIDGET_TEXT, resultsBean.getNow().getText());
-        editor.putString(WIDGET_CODE, resultsBean.getNow().getCode());
-        editor.commit();
-        sendBroadcast(new Intent("android.appwidget.action.WEATHER_UPDATE"));
     }
 
     private CharSequence formatNowInfo(WeatherNowInfo.ResultsBean resultsBean) {
@@ -354,6 +373,9 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherInterf
             mDailyListAdapter.setDailyInfo(info.getResults().get(0));
 //            mCardListAdapter.setCardInfo(info.getResults().get(0));
             mContentInfoView.setWeatherInfo(info.getResults().get(0));
+            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(mContext).edit();
+            editor.putString(DAILY_INFO, gson.toJson(info));
+            editor.commit();
         }
     }
 
