@@ -3,6 +3,7 @@ package com.laocuo.weather.widget;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -34,6 +35,9 @@ import com.laocuo.weather.view.WeatherActivity;
  */
 
 public class WeatherWidgetProvider extends AppWidgetProvider {
+    public static final String ACTION_NOTIFY_DATASET_CHANGED =
+            "android.appwidget.action.WEATHER_UPDATE";
+
     private Gson gson = new Gson();
 
     public WeatherWidgetProvider() {
@@ -43,6 +47,17 @@ public class WeatherWidgetProvider extends AppWidgetProvider {
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
+        String action = intent.getAction();
+
+        if (ACTION_NOTIFY_DATASET_CHANGED.equals(action)) {
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context,
+                    WeatherWidgetProvider.class));
+
+            onUpdate(context, appWidgetManager, appWidgetIds);
+        } else {
+            super.onReceive(context, intent);
+        }
     }
 
     @Override

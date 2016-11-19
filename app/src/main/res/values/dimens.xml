@@ -38,7 +38,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="city_list_padding">24dp</dimen>
-    <dimen name="city_navigate_width">40dp</dimen>
-    <dimen name="city_chief_size">60dp</dimen>
+    <dimen name="city_navigate_width">30dp</dimen>
+    <dimen name="city_chief_size">70dp</dimen>
     <dimen name="city_chief_font_size">40sp</dimen>
 </resources>
