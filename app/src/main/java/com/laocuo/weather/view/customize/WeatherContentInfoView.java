@@ -128,7 +128,7 @@ public class WeatherContentInfoView extends View {
         }
         int averagetemp = alltemp/mTempHighList.size();
         int averagew  = widthsize/(mTempHighList.size()+1);
-        int averageh = heightsize*4/5;
+        int averageh = heightsize-mCircleRadius*2;
 
         if (mPercent > 0) {
             Path path = new Path();
