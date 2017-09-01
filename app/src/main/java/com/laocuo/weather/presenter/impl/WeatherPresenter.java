@@ -44,7 +44,7 @@ public class WeatherPresenter extends BasePresenter{
     public void getNowInfo(String city) {
         WeatherApi weatherApiapi = ApiManager.getInstence().getWeatherApiService();
 
-        Subscription subscription = weatherApiapi.getNowInfo(WeatherApp.getWeatherApiKey(),
+        Subscription subscription = weatherApiapi.getNowInfo(WeatherApp.getContext().getWeatherApiKey(),
                 city, "zh-Hans", "c")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -73,7 +73,7 @@ public class WeatherPresenter extends BasePresenter{
     public void getDailyInfo(String city) {
         WeatherApi weatherApiapi = ApiManager.getInstence().getWeatherApiService();
 
-        Subscription subscription = weatherApiapi.getDailyInfo(WeatherApp.getWeatherApiKey(),
+        Subscription subscription = weatherApiapi.getDailyInfo(WeatherApp.getContext().getWeatherApiKey(),
                 city, "zh-Hans", "c", "0", "3")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -100,7 +100,7 @@ public class WeatherPresenter extends BasePresenter{
     public void getHourlyInfo(String city) {
         WeatherApi weatherApiapi = ApiManager.getInstence().getWeatherApiService();
 
-        Subscription subscription = weatherApiapi.getHourlyInfo(WeatherApp.getWeatherApiKey(),
+        Subscription subscription = weatherApiapi.getHourlyInfo(WeatherApp.getContext().getWeatherApiKey(),
                 city, "zh-Hans", "c", "0", "7")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -127,7 +127,7 @@ public class WeatherPresenter extends BasePresenter{
     public void getAirInfo(String city) {
         WeatherApi weatherApiapi = ApiManager.getInstence().getWeatherApiService();
 
-        Subscription subscription = weatherApiapi.getAirInfo(WeatherApp.getWeatherApiKey(),
+        Subscription subscription = weatherApiapi.getAirInfo(WeatherApp.getContext().getWeatherApiKey(),
                 city, "zh-Hans", "c", "city")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -154,7 +154,7 @@ public class WeatherPresenter extends BasePresenter{
     public void getLifeInfo(String city) {
         WeatherApi weatherApiapi = ApiManager.getInstence().getWeatherApiService();
 
-        Subscription subscription = weatherApiapi.getLifeInfo(WeatherApp.getWeatherApiKey(),
+        Subscription subscription = weatherApiapi.getLifeInfo(WeatherApp.getContext().getWeatherApiKey(),
                 city, "zh-Hans")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -181,7 +181,7 @@ public class WeatherPresenter extends BasePresenter{
     public void getSunInfo(String city) {
         WeatherApi weatherApiapi = ApiManager.getInstence().getWeatherApiService();
 
-        Subscription subscription = weatherApiapi.getSunInfo(WeatherApp.getWeatherApiKey(),
+        Subscription subscription = weatherApiapi.getSunInfo(WeatherApp.getContext().getWeatherApiKey(),
                 city, "zh-Hans", "0", "3")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
