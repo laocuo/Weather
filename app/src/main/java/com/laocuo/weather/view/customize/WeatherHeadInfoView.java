@@ -1,6 +1,7 @@
 package com.laocuo.weather.view.customize;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -12,6 +13,8 @@ import android.view.View;
 import com.laocuo.weather.WeatherApp;
 import com.laocuo.weather.bean.WeatherNowInfo;
 import com.laocuo.weather.utils.DensityUtil;
+
+import java.io.File;
 
 /**
  Copyright (C) laocuo <laocuo@163.com>
@@ -30,6 +33,10 @@ import com.laocuo.weather.utils.DensityUtil;
  */
 
 public class WeatherHeadInfoView extends View {
+    private static final String FONTS_FOLDER = "fonts";
+    private static final String FONT_TEMPERATURE = FONTS_FOLDER
+            + File.separator + "ComingSoon.ttf";
+
     private float mPercent = 1.0f;
     private int mVerticalOffset;
     private float mTextDisappearPercentS = 0.4f;
@@ -41,6 +48,7 @@ public class WeatherHeadInfoView extends View {
     private int mTextGapBig, mTextGapMiddle, mTextGapMiddle1, mTextGapSmall;
     private int mTextGapStart;
     private int mActionBarHeight;
+    private Typeface mTempFont;
 
     public WeatherHeadInfoView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -63,6 +71,9 @@ public class WeatherHeadInfoView extends View {
         mTextGapStart = DensityUtil.dip2px(context, 20);
 
         mActionBarHeight = DensityUtil.getActionBarSize(context);
+
+        AssetManager assets = context.getAssets();
+        mTempFont = Typeface.createFromAsset(assets, FONT_TEMPERATURE);
     }
 
     @Override
@@ -123,11 +134,13 @@ public class WeatherHeadInfoView extends View {
             }
         }
 
+        mPaint.setTypeface(mTempFont);
         mPaint.setTextSize((mTextSizeBig-mTextSizeMiddle)*mPercent+mTextSizeMiddle);
         mPaint.getTextBounds(temp, 0, temp.length(), r);
         start = (int) ((((widthsize-r.width())/2)-mTextGapStart)*mPercent + mTextGapStart);
         bottom += (r.height()+(mTextGapBig-mTextGapSmall)*mPercent+mTextGapSmall);
         canvas.drawText(temp, start, bottom, mPaint);
+        mPaint.setTypeface(Typeface.DEFAULT);
 
         if (mPercent > mTextDisappearPercentS) {
             mPaint.setTextSize(mTextSizeSmall);

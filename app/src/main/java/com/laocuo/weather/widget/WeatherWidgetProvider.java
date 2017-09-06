@@ -85,7 +85,7 @@ public class WeatherWidgetProvider extends AppWidgetProvider {
             if (info != null) {
                 WeatherNowInfo.ResultsBean resultsBean = info.getResults().get(0);
                 remoteViews.setTextViewText(R.id.widget_city, resultsBean.getLocation().getName());
-                remoteViews.setTextViewText(R.id.widget_temperature, resultsBean.getNow().getTemperature()+ WeatherApp.SHESHIDU);
+                remoteViews.setTextViewText(R.id.widget_temperature, resultsBean.getNow().getTemperature()+ WeatherApp.DEGREE);
                 remoteViews.setTextViewText(R.id.widget_text, resultsBean.getNow().getText());
                 String code = resultsBean.getNow().getCode();
                 remoteViews.setImageViewResource(R.id.widget_image, ImagesUtil.getDrawableByCode(Integer.valueOf(code)));
