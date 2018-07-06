@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    compileSdkVersion 26
+    buildToolsVersion "27.0.3"
     defaultConfig {
         applicationId "com.laocuo.weather"
         minSdkVersion 21
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode 6
         versionName "1.0.5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -18,30 +18,31 @@ android {
         }
     }
 }
-apply plugin: 'com.neenbedankt.android-apt'
+// apply plugin: 'com.neenbedankt.android-apt'
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    compile 'com.android.support:design:25.3.1'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     /*rotrofit*/
-    compile 'com.squareup.retrofit2:retrofit:+'
-    compile 'com.squareup.retrofit2:converter-gson:+'
-    compile 'com.squareup.retrofit2:adapter-rxjava:+'
-    compile 'com.google.code.gson:gson:+'
+    implementation 'com.squareup.retrofit2:retrofit:+'
+    implementation 'com.squareup.retrofit2:converter-gson:+'
+    implementation 'com.squareup.retrofit2:adapter-rxjava:+'
+    implementation 'com.google.code.gson:gson:+'
     /*rx-android-java*/
-    compile 'io.reactivex:rxjava:+'
-    compile 'com.squareup.retrofit:adapter-rxjava:+'
-    compile 'com.google.code.gson:gson:2.2.4'
-    compile 'com.github.bumptech.glide:glide:3.7.0'
-    testCompile 'junit:junit:4.12'
-    compile 'io.reactivex:rxandroid:1.2.1'
+    implementation 'io.reactivex:rxjava:+'
+    implementation 'com.squareup.retrofit:adapter-rxjava:+'
+    implementation 'com.google.code.gson:gson:2.2.4'
+    implementation 'com.github.bumptech.glide:glide:3.7.0'
+    testImplementation 'junit:junit:4.12'
+    implementation 'io.reactivex:rxandroid:1.2.1'
     //cardview
-    compile 'com.android.support:cardview-v7:25.3.1'
-    compile 'com.jakewharton:butterknife:8.4.0'
-    apt 'com.jakewharton:butterknife-compiler:8.4.0'
-
-    compile 'com.github.promeg:tinypinyin:1.0.0'
+    implementation 'com.android.support:cardview-v7:26.1.0'
+    implementation 'com.jakewharton:butterknife:8.4.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
+    implementation 'com.github.promeg:tinypinyin:1.0.0'
+    implementation 'com.android.support:design:26.1.0'
 }
