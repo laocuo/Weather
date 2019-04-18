@@ -45,16 +45,21 @@ public class ImagesUtil {
         }
     }
 
+    private static int[] backgrounds = new int[] {
+            R.drawable.p1,
+            R.drawable.p2,
+            R.drawable.p3,
+            R.drawable.p4,
+            R.drawable.p5,
+            R.drawable.p6,
+            R.drawable.p7,
+            R.drawable.p8,
+            R.drawable.p9,
+            R.drawable.p10
+    };
+
     public static int getRandomNavigationDrawable() {
-        switch (RANDOM.nextInt(3)) {
-            default:
-            case 0:
-                return R.drawable.cheese_1;
-            case 1:
-                return R.drawable.cheese_2;
-            case 2:
-                return R.drawable.cheese_3;
-        }
+        return backgrounds[RANDOM.nextInt(10)];
     }
 
     public static int getDrawableByCode(int code) {
